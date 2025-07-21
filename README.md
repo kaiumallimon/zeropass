@@ -20,6 +20,20 @@ A modern, secure, and user-friendly password manager built with Flutter.
 
 ---
 
+## 📸 App Screenshots
+
+Below are some screenshots of ZeroPass in action:
+
+<p align="center">
+  <img src="app_demo/Screenshot_1753124673.png" alt="Screenshot 1" width="250" />
+  <img src="app_demo/Screenshot_1753124677.png" alt="Screenshot 2" width="250" />
+  <img src="app_demo/Screenshot_1753124680.png" alt="Screenshot 3" width="250" />
+  <img src="app_demo/Screenshot_1753124682.png" alt="Screenshot 4" width="250" />
+  <img src="app_demo/Screenshot_1753124685.png" alt="Screenshot 5" width="250" />
+</p>
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
