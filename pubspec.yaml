@@ -1,0 +1,82 @@
+name: zeropass
+description: "A secure password manager that prioritizes user privacy and data security with end-to-end encryption. It allows users to store, manage, and retrieve passwords securely, ensuring that sensitive information remains confidential and protected from unauthorized access."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.8
+  
+  # database
+  supabase_flutter: ^2.9.1
+  
+  # state-management
+  provider: ^6.1.5
+  
+  # routing
+  go_router: ^16.0.0
+  
+  # local-storage
+  flutter_secure_storage: ^9.2.4 
+  
+  # encryption
+  crypto: ^3.0.6
+  encrypt: ^5.0.3
+  uuid: ^4.5.1
+  clipboard: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+
+flutter:
+
+  uses-material-design: true
+  
+  # Assets for images and svgs
+  assets:
+    - assets/images/
+    - assets/svgs/
+
+  # Custom fonts
+  fonts:
+    # - family: Inter
+    #   fonts:
+    #     - asset: assets/fonts/inter/Inter_18pt-Regular.ttf
+    #     - asset: assets/fonts/inter/Inter_18pt-Medium.ttf
+    #       weight: 500
+    #     - asset: assets/fonts/inter/Inter_18pt-SemiBold.ttf
+    #       weight: 600
+    #     - asset: assets/fonts/inter/Inter_18pt-Bold.ttf
+    #       weight: 700
+    
+    - family: Sora
+      fonts:
+        - asset: assets/fonts/sora/Sora-Regular.ttf
+        - asset: assets/fonts/sora/Sora-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/sora/Sora-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/sora/Sora-Bold.ttf
+          weight: 700
+    
+    - family: SpaceGrotesk
+      fonts:
+        - asset: assets/fonts/space_grotesk/SpaceGrotesk-Regular.ttf
+        - asset: assets/fonts/space_grotesk/SpaceGrotesk-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/space_grotesk/SpaceGrotesk-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/space_grotesk/SpaceGrotesk-Bold.ttf
+          weight: 700
