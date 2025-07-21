@@ -21,4 +21,15 @@ class AppStrings {
   static final String welcome3Title3 = 'Protect';
   static final String welcome3Subtitle =
       'Easily manage and categorize your logins. ZeroPass gives you control over your digital security, all in one app.';
+
+  static final String registerTitle = 'Register';
+  static final String registerSubtitle =
+      'Create an account to start managing your passwords securely.';
+
+  static final String loginTitle = 'Welcome Back!';
+  static final String loginSubtitle =
+      'We missed you! Log in to manage\nyour passwords safely.';
+
+
+  static final String forgotPassword = 'Forgot Password?';
 }
