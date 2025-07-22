@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
     this.height,
     this.controller,
     this.obscureText = false,
+    this.prefixIcon,
   });
 
   final String? label;
@@ -20,6 +21,7 @@ class CustomTextField extends StatefulWidget {
   final double? height;
   final TextEditingController? controller;
   final bool obscureText;
+  final Widget? prefixIcon;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -88,6 +90,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: colorScheme.primary, width: 2),
               ),
+              prefixIcon:
+                  widget.prefixIcon ??
+                  (widget.obscureText
+                      ? HugeIcon(
+                          icon: HugeIcons.strokeRoundedLock,
+                          color: colorScheme.primary.withOpacity(0.6),
+                        )
+                      : null),
               suffixIcon: widget.obscureText
                   ? GestureDetector(
                       child: HugeIcon(
