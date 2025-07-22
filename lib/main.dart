@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/core/theme/app_theme.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/providers/add_category_provider.dart';
+import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
 import 'package:zeropass/presentation/providers/login_provider.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DashboardWrapperProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => AddCategoryProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',

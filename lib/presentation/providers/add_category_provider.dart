@@ -18,8 +18,9 @@ class AddCategoryProvider extends ChangeNotifier {
     if (categoryNameController.text.isEmpty) {
       return 'Category name cannot be empty';
     }
-    if (categoryNameController.text.length < 3) {
-      return 'Category name must be at least 3 characters long';
+    if (categoryNameController.text.length < 3 ||
+        categoryNameController.text.length > 15) {
+      return 'Category name must be within 3 to 15 characters';
     }
     return '';
   }
