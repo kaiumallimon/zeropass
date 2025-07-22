@@ -10,7 +10,6 @@ class EmailVerifier {
       final apiKey = dotenv.env['ZEROBOUNCE_API_KEY'];
       
       
-      print("zerobounce api: " + apiKey!);
       
       
       if (apiKey == null || apiKey.isEmpty) {
