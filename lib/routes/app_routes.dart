@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zeropass/presentation/pages/auth/forgot_password.dart';
 import 'package:zeropass/presentation/pages/auth/login_page.dart';
 import 'package:zeropass/presentation/pages/auth/register_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/dashboard_wrapper.dart';
 import 'package:zeropass/presentation/pages/splash/splash_page.dart';
 import 'package:zeropass/presentation/pages/welcome/welcome_page.dart';
 
@@ -31,6 +32,11 @@ class AppRoutes {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterPage(),
+      ),
+
+      GoRoute(
+        path: '/dashboard',
+        builder: (context, state) => const DashboardWrapper(),
       ),
     ],
   );
