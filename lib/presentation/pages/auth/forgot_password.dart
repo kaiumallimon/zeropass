@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:provider/provider.dart';
 import 'package:zeropass/core/constants/app_assets.dart';
+import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
 import 'package:zeropass/shared/widgets/custom_button.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
@@ -75,20 +77,23 @@ class ForgotPassword extends StatelessWidget {
                   CustomTextField(
                     hintText: 'Your email address',
                     keyboardType: TextInputType.emailAddress,
+                    controller: context
+                        .watch<ForgotpasswordProvider>()
+                        .emailController,
                   ),
 
                   const SizedBox(height: 20),
 
                   // Reset Password Button
-                  CustomButton(
-                    text: 'Reset Password',
-                    width: double.infinity,
-                    onPressed: () {
-                      // Handle reset password logic here
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Reset password link sent!')),
+                  Consumer<ForgotpasswordProvider>(
+                    builder: (context, provider, child) {
+                      return CustomButton(
+                        text: 'Reset Password',
+                        width: double.infinity,
+                        isLoading: provider.isLoading,
+                        onPressed: () async =>
+                            await provider.resetPassword(context),
                       );
-                      // Optionally, navigate back to login or another page
                     },
                   ),
                 ],

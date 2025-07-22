@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/core/theme/app_theme.dart';
+import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
 import 'package:zeropass/presentation/providers/welcome_provider.dart';
@@ -35,6 +36,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SplashProvider()),
         ChangeNotifierProvider(create: (_) => WelcomeProvider()),
         ChangeNotifierProvider(create: (_) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (_) => ForgotpasswordProvider()),
+
 
         // ChangeNotifierProvider(create: (_) => AnotherProvider()),
       ],
