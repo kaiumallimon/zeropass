@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
     this.borderRadius = 8.0,
     this.isBordered = false,
     this.isLoading = false,
+    this.icon,
   });
 
   final String text;
@@ -24,6 +25,7 @@ class CustomButton extends StatelessWidget {
   final double borderRadius;
   final bool isBordered;
   final bool isLoading;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +48,29 @@ class CustomButton extends StatelessWidget {
                 : BorderSide.none,
           ),
         ),
-        child: isLoading
-            ? CupertinoActivityIndicator(
-                color: isBordered
-                    ? Theme.of(context).colorScheme.primary
-                    : textColor ?? Colors.white,
-              )
-            : Text(
-                text,
-                style: TextStyle(
-                  color: isBordered
-                      ? Theme.of(context).colorScheme.primary
-                      : textColor ?? Colors.white,
-                  fontSize: 15,
-                ),
-              ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 8,
+          children: [
+            if (icon != null) icon!,
+            isLoading
+                ? CupertinoActivityIndicator(
+                    color: isBordered
+                        ? Theme.of(context).colorScheme.primary
+                        : textColor ?? Colors.white,
+                  )
+                : Text(
+                    text,
+                    style: TextStyle(
+                      color: isBordered
+                          ? Theme.of(context).colorScheme.primary
+                          : textColor ?? Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }

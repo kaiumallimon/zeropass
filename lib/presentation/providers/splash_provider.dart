@@ -4,15 +4,20 @@ import 'package:zeropass/data/local_db/local_db_service.dart';
 
 class SplashProvider extends ChangeNotifier {
   // navigate to the expected page
-  Future<void> navigate(BuildContext context)async {
+  Future<void> navigate(BuildContext context) async {
     bool isWelcomeShown = LocalDatabaseService.isWelcomeShown();
+    bool isLoggedIn = LocalDatabaseService.isLoggedIn();
 
-    if (isWelcomeShown) {
-      // if welcome page is shown, navigate to login page
-      context.go('/login');
+    if (isLoggedIn) {
+      if (context.mounted) {
+        context.go('/home');
+      }
     } else {
-      // if welcome page is not shown, navigate to welcome page
-      context.go('/welcome');
+      if (isWelcomeShown) {
+        context.go('/login');
+      } else {
+        context.go('/welcome');
+      }
     }
   }
 }

@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/core/theme/app_theme.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
+import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
 import 'package:zeropass/presentation/providers/login_provider.dart';
+import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
 import 'package:zeropass/presentation/providers/welcome_provider.dart';
@@ -48,6 +50,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RegistrationProvider()),
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => ForgotpasswordProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardWrapperProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',

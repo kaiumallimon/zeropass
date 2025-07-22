@@ -60,6 +60,12 @@ class LocalDatabaseService {
     return box.get(_welcomeKey, defaultValue: false) as bool;
   }
 
+  // Check if a profile is logged in
+  static bool isLoggedIn() {
+    final box = Hive.box<ProfileModel>(_profileBox);
+    return box.get(_profileKey) != null;
+  }
+
   // Logout: clear all except welcome
   static Future<void> logout() async {
     await Hive.box<ProfileModel>(_profileBox).clear();
