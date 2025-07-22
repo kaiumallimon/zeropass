@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:zeropass/core/constants/app_assets.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
+import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/shared/widgets/custom_button.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
@@ -11,6 +13,8 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final registrationProvider = context.watch<RegistrationProvider>();
 
     return Scaffold(
       body: SafeArea(
@@ -50,6 +54,7 @@ class RegisterPage extends StatelessWidget {
                   label: 'Name',
                   hintText: 'Enter your name',
                   keyboardType: TextInputType.name,
+                  controller: registrationProvider.nameController,
                 ),
 
                 const SizedBox(height: 20),
@@ -59,6 +64,7 @@ class RegisterPage extends StatelessWidget {
                   label: 'Email',
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
+                  controller: registrationProvider.emailController,
                 ),
 
                 const SizedBox(height: 20),
@@ -68,15 +74,23 @@ class RegisterPage extends StatelessWidget {
                   label: 'Password',
                   hintText: 'Enter your password',
                   keyboardType: TextInputType.visiblePassword,
+                  controller: registrationProvider.passwordController,
                   obscureText: true,
                 ),
 
                 const SizedBox(height: 30),
 
-                CustomButton(
-                  text: 'Register',
-                  width: double.infinity,
-                  onPressed: () {},
+                Consumer<RegistrationProvider>(
+                  builder: (context, provider, child) {
+                    return CustomButton(
+                      text: 'Register',
+                      width: double.infinity,
+                      isLoading: provider.isLoading,
+                      onPressed: () async {
+                        await registrationProvider.register(context);
+                      },
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 30),

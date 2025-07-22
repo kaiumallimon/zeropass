@@ -146,7 +146,6 @@ class WelcomePage extends StatelessWidget {
               ),
             );
           },
-          physics: const BouncingScrollPhysics(),
         ),
       ),
     );
