@@ -30,6 +30,8 @@ class AppStrings {
   static final String loginSubtitle =
       'We missed you! Log in to manage\nyour passwords safely.';
 
-
   static final String forgotPassword = 'Forgot Password?';
+
+  static final String add_category_tip =
+      'This is where you can add a new category. Please enter the category name below.';
 }

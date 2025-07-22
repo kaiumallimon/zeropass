@@ -7,9 +7,6 @@ class DatabaseService {
   Future<void> insertData(String table, Map<String, dynamic> data) async {
     try {
       final response = await supabase.from(table).insert(data);
-      if (response.error != null) {
-        throw response.error!;
-      }
     } catch (error) {
       debugPrint('Error inserting data: $error');
       rethrow;

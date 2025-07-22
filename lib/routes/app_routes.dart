@@ -4,6 +4,7 @@ import 'package:zeropass/presentation/pages/auth/forgot_password.dart';
 import 'package:zeropass/presentation/pages/auth/login_page.dart';
 import 'package:zeropass/presentation/pages/auth/register_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/add_password/add_password.dart';
+import 'package:zeropass/presentation/pages/dashboard/categories/add_categories_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/categories/categories_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/dashboard_wrapper.dart';
 import 'package:zeropass/presentation/pages/dashboard/generator/password_generator_page.dart';
@@ -59,6 +60,15 @@ class AppRoutes {
               child: const CategoriesPage(),
               transitionsBuilder: _fadeTransition,
             ),
+
+            routes: [
+              GoRoute(
+                path: '/add-category',
+                builder: (context, state) {
+                  return const AddCategoriesPage();
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/add-password',
