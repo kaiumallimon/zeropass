@@ -54,4 +54,28 @@ class AuthService {
       throw Exception('Error sending password reset email: $error');
     }
   }
+
+  /// Logs in a user with the given email and password.
+  /// If the login is successful, it returns the user object.
+  /// If the login fails, it throws an exception.
+  Future<User> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final authResponse = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      if (authResponse.user == null) {
+        throw Exception('User login failed');
+      } else {
+        debugPrint('User logged in: ${authResponse.user}');
+        return authResponse.user!;
+      }
+    } catch (error) {
+      throw Exception('Error logging in user: $error');
+    }
+  }
 }

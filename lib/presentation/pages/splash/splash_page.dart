@@ -5,15 +5,31 @@ import 'package:zeropass/core/constants/app_assets.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 2), () {
+        // Navigate to the next page after the splash screen
+        if (context.mounted) {
+          context.read<SplashProvider>().navigate(context);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // Start the navigation process when the splash page is built
-    context.read<SplashProvider>().navigate(context);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,

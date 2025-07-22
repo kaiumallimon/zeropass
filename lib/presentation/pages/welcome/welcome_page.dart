@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zeropass/core/constants/app_assets.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
+import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/pages/welcome/widgets/pageview_navigator.dart';
 import 'package:zeropass/shared/widgets/custom_button.dart';
 
@@ -121,8 +122,14 @@ class WelcomePage extends StatelessWidget {
                             child: CustomButton(
                               text: 'Register',
                               isBordered: true,
-                              onPressed: () {
-                                context.go('/register');
+                              onPressed: () async {
+                                await LocalDatabaseService.setWelcomeShown(
+                                  true,
+                                );
+
+                                if (context.mounted) {
+                                  context.go('/register');
+                                }
                               },
                               height: 45,
                             ),
@@ -133,8 +140,14 @@ class WelcomePage extends StatelessWidget {
                               text: 'Login',
                               height: 45,
 
-                              onPressed: () {
-                                context.go('/login');
+                              onPressed: () async {
+                                await LocalDatabaseService.setWelcomeShown(
+                                  true,
+                                );
+
+                                if (context.mounted) {
+                                  context.go('/login');
+                                }
                               },
                             ),
                           ),

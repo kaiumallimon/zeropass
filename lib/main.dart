@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/core/theme/app_theme.dart';
+import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
+import 'package:zeropass/presentation/providers/login_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
 import 'package:zeropass/presentation/providers/welcome_provider.dart';
@@ -20,7 +22,16 @@ void main() async {
   final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'];
 
   /// Supabase SDK init
-  await Supabase.initialize(url: supabaseUrl!, anonKey: supabaseKey!);
+  await Supabase.initialize(
+    url: supabaseUrl!,
+    anonKey: supabaseKey!,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
+  );
+
+  /// initialize local database service
+  await LocalDatabaseService.init();
 
   runApp(const MyApp());
 }
@@ -32,14 +43,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Add your providers here, e.g.:
         ChangeNotifierProvider(create: (_) => SplashProvider()),
         ChangeNotifierProvider(create: (_) => WelcomeProvider()),
         ChangeNotifierProvider(create: (_) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => ForgotpasswordProvider()),
-
-
-        // ChangeNotifierProvider(create: (_) => AnotherProvider()),
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',

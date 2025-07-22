@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:zeropass/core/constants/app_assets.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
+import 'package:zeropass/presentation/providers/login_provider.dart';
 import 'package:zeropass/shared/widgets/custom_button.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
@@ -11,6 +13,8 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final loginProvider = context.watch<LoginProvider>();
 
     return Scaffold(
       body: SafeArea(
@@ -50,6 +54,7 @@ class LoginPage extends StatelessWidget {
                   label: 'Email',
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
+                  controller: loginProvider.emailController,
                 ),
 
                 const SizedBox(height: 20),
@@ -60,6 +65,7 @@ class LoginPage extends StatelessWidget {
                   hintText: 'Enter your password',
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
+                  controller: loginProvider.passwordController,
                 ),
 
                 const SizedBox(height: 20),
@@ -85,10 +91,15 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                CustomButton(
-                  text: 'Login',
-                  width: double.infinity,
-                  onPressed: () {},
+                Consumer<LoginProvider>(
+                  builder: (context, provider, child) {
+                    return CustomButton(
+                      text: 'Login',
+                      width: double.infinity,
+                      isLoading: provider.isLoading,
+                      onPressed: () async => provider.login(context),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 30),
