@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -11,6 +12,7 @@ class CustomButton extends StatelessWidget {
     this.textColor,
     this.borderRadius = 8.0,
     this.isBordered = false,
+    this.isLoading = false,
   });
 
   final String text;
@@ -21,6 +23,7 @@ class CustomButton extends StatelessWidget {
   final Color? textColor;
   final double borderRadius;
   final bool isBordered;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class CustomButton extends StatelessWidget {
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: isBordered
               ? Theme.of(context).colorScheme.surface
@@ -43,15 +46,21 @@ class CustomButton extends StatelessWidget {
                 : BorderSide.none,
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: isBordered
-                ? Theme.of(context).colorScheme.primary
-                : textColor ?? Colors.white,
-            fontSize: 15,
-          ),
-        ),
+        child: isLoading
+            ? CupertinoActivityIndicator(
+                color: isBordered
+                    ? Theme.of(context).colorScheme.primary
+                    : textColor ?? Colors.white,
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  color: isBordered
+                      ? Theme.of(context).colorScheme.primary
+                      : textColor ?? Colors.white,
+                  fontSize: 15,
+                ),
+              ),
       ),
     );
   }
