@@ -3,7 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:zeropass/presentation/pages/auth/forgot_password.dart';
 import 'package:zeropass/presentation/pages/auth/login_page.dart';
 import 'package:zeropass/presentation/pages/auth/register_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/add_password/add_password.dart';
+import 'package:zeropass/presentation/pages/dashboard/categories/categories_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/dashboard_wrapper.dart';
+import 'package:zeropass/presentation/pages/dashboard/generator/password_generator_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/home/home_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/profile_page.dart';
 import 'package:zeropass/presentation/pages/splash/splash_page.dart';
@@ -46,6 +49,30 @@ class AppRoutes {
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
               child: const HomePage(),
+              transitionsBuilder: _fadeTransition,
+            ),
+          ),
+          GoRoute(
+            path: '/categories',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const CategoriesPage(),
+              transitionsBuilder: _fadeTransition,
+            ),
+          ),
+          GoRoute(
+            path: '/add-password',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const AddPasswordPage(),
+              transitionsBuilder: _fadeTransition,
+            ),
+          ),
+          GoRoute(
+            path: '/generator',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const PasswordGeneratorPage(),
               transitionsBuilder: _fadeTransition,
             ),
           ),

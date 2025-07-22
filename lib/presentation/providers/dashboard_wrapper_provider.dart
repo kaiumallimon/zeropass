@@ -3,7 +3,13 @@ import 'package:go_router/go_router.dart';
 
 class DashboardWrapperProvider extends ChangeNotifier {
   // List of tabs (matching your GoRouter paths)
-  final List<String> tabs = ['/home', '/profile'];
+  final List<String> tabs = [
+    '/home',
+    '/categories',
+    '/add-password',
+    '/generator',
+    '/profile',
+  ];
 
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
