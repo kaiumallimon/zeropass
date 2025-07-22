@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:zeropass/data/services/auth_service.dart';
 import 'package:zeropass/data/services/email_verifier.dart';
 
 class RegistrationProvider extends ChangeNotifier {
@@ -8,6 +10,9 @@ class RegistrationProvider extends ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  /// auth service
+  final AuthService _authService = AuthService();
 
   /// Loading state for registration process
   bool _isLoading = false;
@@ -43,17 +48,71 @@ class RegistrationProvider extends ChangeNotifier {
       );
     } else {
       setLoading(true);
-      if (!await EmailVerifier().verifyEmail(emailController.text)) {
-        if (context.mounted) {
-          setLoading(false);
-          QuickAlert.show(
-            context: context,
-            type: QuickAlertType.error,
-            title: "Invalid Email",
-            text: "Invalid email address. Please enter a valid email.",
+      try {
+        if (!await EmailVerifier().verifyEmail(emailController.text)) {
+          if (context.mounted) {
+            setLoading(false);
+            QuickAlert.show(
+              context: context,
+              type: QuickAlertType.error,
+              title: "Invalid Email",
+              text: "Invalid email address. Please enter a valid email.",
+            );
+          }
+        } else {
+          // Simulate registration
+          final String name = nameController.text.trim();
+          final String email = emailController.text.trim();
+          final String password = passwordController.text.trim();
+
+          final response = await _authService.registerUser(
+            name: name,
+            email: email,
+            password: password,
           );
+
+          if (!response) {
+            if (context.mounted) {
+              setLoading(false);
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.error,
+                title: "Registration Failed",
+                text: "An error occurred while registering. Please try again.",
+              );
+            }
+          } else {
+            if (context.mounted) {
+              setLoading(false);
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.success,
+                title: "Registration Successful",
+                text: "You have successfully registered. Please log in.",
+                onConfirmBtnTap: () {
+                  nameController.clear();
+                  emailController.clear();
+                  passwordController.clear();
+
+                  setLoading(false);
+
+                  context.go('/login');
+                },
+              );
+            }
+          }
         }
-      } else {}
+      } catch (error) {
+        setLoading(false);
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Registration Failed",
+          text: error.toString(),
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   }
 }
