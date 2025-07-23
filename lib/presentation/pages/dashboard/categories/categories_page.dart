@@ -13,12 +13,20 @@ class CategoriesPage extends StatefulWidget {
 
 class _CategoriesPageState extends State<CategoriesPage> {
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  void initState() {
+    super.initState();
 
+    // Fetch categories once when the page is created
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<CategoryProvider>().fetchCategories();
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Remove the fetch call from here
 
     return Scaffold(
       appBar: AppBar(
@@ -41,17 +49,6 @@ class _CategoriesPageState extends State<CategoriesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // CustomTextField(
-                //   prefixIcon: HugeIcon(
-                //     icon: HugeIcons.strokeRoundedSearch01,
-                //     color: theme.colorScheme.onSurface.withOpacity(.7),
-                //     size: 20,
-                //   ),
-                //   hintText: 'Search Categories',
-                //   keyboardType: TextInputType.text,
-                //   controller: context.read<CategoryProvider>().searchController,
-                // ),
-                // const SizedBox(height: 20),
                 Expanded(
                   child: Consumer<CategoryProvider>(
                     builder: (context, provider, child) {
@@ -78,15 +75,6 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Text(
-                          //   'Available Categories:',
-                          //   style: theme.textTheme.bodyMedium?.copyWith(
-                          //     color: theme.colorScheme.onSurface.withOpacity(
-                          //       .7,
-                          //     ),
-                          //   ),
-                          // ),
-                          // const SizedBox(height: 10),
                           Expanded(
                             child: GridView.builder(
                               itemCount: provider.categories.length,

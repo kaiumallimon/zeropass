@@ -6,6 +6,7 @@ import 'package:zeropass/core/theme/app_theme.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/providers/add_category_provider.dart';
 import 'package:zeropass/presentation/providers/add_password_provider.dart';
+import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
@@ -61,6 +62,8 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               AddPasswordProvider(context.read<CategoryProvider>()),
         ),
+
+        ChangeNotifierProvider(create: (_) => CategorizedPasswordsProvider()),
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',

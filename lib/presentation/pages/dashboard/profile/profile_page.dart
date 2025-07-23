@@ -59,14 +59,12 @@ class ProfilePage extends StatelessWidget {
   Widget _buildAppBar(ThemeData theme) {
     return SliverAppBar(
       backgroundColor: theme.colorScheme.surface,
+      foregroundColor: theme.colorScheme.onSurface,
+      elevation: 0,
+      shadowColor: theme.colorScheme.surface,
+      surfaceTintColor: theme.colorScheme.surface,
       toolbarHeight: 80,
-      title: Text(
-        'Profile',
-        style: theme.textTheme.headlineMedium?.copyWith(
-          color: theme.colorScheme.onSurface,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      title: Text('Profile'),
       pinned: true,
     );
   }
