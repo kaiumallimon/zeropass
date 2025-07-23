@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/data/services/database_service.dart';
+import 'package:zeropass/utils/encryptor_helper.dart';
 
 class AddCategoryProvider extends ChangeNotifier {
   final TextEditingController categoryNameController = TextEditingController();
@@ -38,7 +41,16 @@ class AddCategoryProvider extends ChangeNotifier {
 
       try {
         final category = categoryNameController.text.trim();
-        await _service.insertData('categories', {'category': category});
+        final userId = Supabase.instance.client.auth.currentUser?.id;
+        final aesKeyString = await SecureStorageService().getAesKey();
+        final aesKey = EncryptionHelper.saltFromBase64(aesKeyString!);
+
+        final encryptedCategory = EncryptionHelper.aesEncrypt(category, aesKey);
+
+        await _service.insertData('categories', {
+          'name': encryptedCategory,
+          'user_id': userId,
+        });
         setLoading(false);
         categoryNameController.clear();
         if (context.mounted) {

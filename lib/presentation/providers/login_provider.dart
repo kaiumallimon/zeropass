@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,6 +8,7 @@ import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/data/models/profile_model.dart';
 import 'package:zeropass/data/services/auth_service.dart';
+import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/utils/encryptor_helper.dart';
 
 class LoginProvider extends ChangeNotifier {
@@ -66,13 +68,13 @@ class LoginProvider extends ChangeNotifier {
         final encryptedName = profile['name'] ?? '';
         final encryptedEmail = profile['email'] ?? '';
         final salt = profile['salt'] ?? '';
-        await storageService.saveSalt(salt);
-
-        final base64Salt = EncryptionHelper.saltFromBase64(salt);
-        final aesKey = EncryptionHelper.deriveAesKeyFromPassword(
+        final saltBase64 = EncryptionHelper.saltFromBase64(salt);
+        final aesKey = await EncryptionHelper.deriveAesKeyFromPassword(
           passwordController.text.trim(),
-          base64Salt,
+          saltBase64,
         );
+        // Save AES key to secure storage
+        await storageService.saveAesKey(EncryptionHelper.saltToBase64(aesKey));
 
         final decryptedName = EncryptionHelper.aesDecrypt(
           encryptedName,
@@ -97,6 +99,9 @@ class LoginProvider extends ChangeNotifier {
       passwordController.clear();
 
       if (context.mounted) {
+        // Refresh ProfileProvider manually after saving profile
+        context.read<ProfileProvider>().refreshProfile();
+
         context.go('/home');
       }
     } on AuthException catch (e) {

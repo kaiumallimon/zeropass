@@ -2,34 +2,21 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageService {
   final FlutterSecureStorage _storage;
-  final String _saltKey;
+  final String _aesKeyStorageKey;
 
-  SecureStorageService({String saltKey = 'salt'})
-      : _storage = const FlutterSecureStorage(),
-        _saltKey = saltKey;
+  SecureStorageService({String aesKeyStorageKey = 'aes_key'})
+    : _storage = const FlutterSecureStorage(),
+      _aesKeyStorageKey = aesKeyStorageKey;
 
-  Future<void> saveSalt(String salt) async {
-    try {
-      await _storage.write(key: _saltKey, value: salt);
-    } catch (e) {
-      // Handle error or rethrow
-      throw Exception('Failed to save salt: $e');
-    }
+  Future<void> saveAesKey(String aesKeyBase64) async {
+    await _storage.write(key: _aesKeyStorageKey, value: aesKeyBase64);
   }
 
-  Future<String?> getSalt() async {
-    try {
-      return await _storage.read(key: _saltKey);
-    } catch (e) {
-      throw Exception('Failed to read salt: $e');
-    }
+  Future<String?> getAesKey() async {
+    return await _storage.read(key: _aesKeyStorageKey);
   }
 
-  Future<void> deleteSalt() async {
-    try {
-      await _storage.delete(key: _saltKey);
-    } catch (e) {
-      throw Exception('Failed to delete salt: $e');
-    }
+  Future<void> deleteAesKey() async {
+    await _storage.delete(key: _aesKeyStorageKey);
   }
 }

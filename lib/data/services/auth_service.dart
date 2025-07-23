@@ -31,8 +31,8 @@ class AuthService {
         try {
           // generate salt:
           final salt = EncryptionHelper.generateSalt();
-          final saltBytes = EncryptionHelper.saltFromBase64(salt);
-          final aesKey = EncryptionHelper.deriveAesKeyFromPassword(
+          final saltBytes =  EncryptionHelper.saltFromBase64(salt);
+          final aesKey = await EncryptionHelper.deriveAesKeyFromPassword(
             password,
             saltBytes,
           );

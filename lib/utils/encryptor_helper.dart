@@ -1,15 +1,36 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:encrypt/encrypt.dart' as encrypt_package;
+import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
+
+
+// Private top-level isolate-safe function
+Uint8List _pbkdf2Worker(Map<String, dynamic> args) {
+  final password = args['password'] as String;
+  final salt = base64.decode(args['salt'] as String);
+  final iterations = args['iterations'] as int;
+  final keyLength = args['keyLength'] as int;
+
+  final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64))
+    ..init(Pbkdf2Parameters(salt, iterations, keyLength));
+  return pbkdf2.process(Uint8List.fromList(utf8.encode(password)));
+}
+
 
 class EncryptionHelper {
   /// Generate a random 16-byte salt and return it as base64 string
   static String generateSalt() {
     final secureRandom = SecureRandom('Fortuna')
-      ..seed(KeyParameter(Uint8List.fromList(
-        List.generate(32, (_) => DateTime.now().millisecondsSinceEpoch.remainder(256)),
-      )));
+      ..seed(
+        KeyParameter(
+          Uint8List.fromList(
+            List.generate(
+              32,
+              (_) => DateTime.now().millisecondsSinceEpoch.remainder(256),
+            ),
+          ),
+        ),
+      );
     final saltBytes = secureRandom.nextBytes(16);
     return base64.encode(saltBytes);
   }
@@ -19,17 +40,27 @@ class EncryptionHelper {
     return base64.decode(base64Salt);
   }
 
-  /// Derive a 256-bit AES key from password and salt (Uint8List)
-  static Uint8List deriveAesKeyFromPassword(
-    String password,
-    Uint8List salt, {
-    int iterations = 100000,
-    int keyLength = 32,
-  }) {
-    final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64))
-      ..init(Pbkdf2Parameters(salt, iterations, keyLength));
-    return pbkdf2.process(Uint8List.fromList(utf8.encode(password)));
+  /// Convert Uint8List salt to base64 string
+  static String saltToBase64(Uint8List salt) {
+    return base64.encode(salt);
   }
+
+  /// Derive a 256-bit AES key from password and salt (Uint8List)
+static Future<Uint8List> deriveAesKeyFromPassword(
+  String password,
+  Uint8List salt, {
+  int iterations = 100000,
+  int keyLength = 32,
+}) {
+  return compute(_pbkdf2Worker, {
+    'password': password,
+    'salt': base64.encode(salt),
+    'iterations': iterations,
+    'keyLength': keyLength,
+  });
+}
+
+
 
   /// Encrypt plaintext with AES key, returns base64 string of IV + ciphertext
   static String aesEncrypt(String plainText, Uint8List aesKey) {
