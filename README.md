@@ -26,14 +26,22 @@ Built with Flutter 3.8.1+ and modern development practices, ZeroPass offers a ro
 
 ## 📸 App Screenshots
 
-Below are some screenshots of ZeroPass in action:
+Below are screenshots of ZeroPass in action:
 
 <p align="center">
-  <img src="app_demo/Screenshot_1753124673.png" alt="Screenshot 1" width="250" />
-  <img src="app_demo/Screenshot_1753124677.png" alt="Screenshot 2" width="250" />
-  <img src="app_demo/Screenshot_1753124680.png" alt="Screenshot 3" width="250" />
-  <img src="app_demo/Screenshot_1753124682.png" alt="Screenshot 4" width="250" />
-  <img src="app_demo/Screenshot_1753124685.png" alt="Screenshot 5" width="250" />
+  <img src="app_demo/Screenshot_1753124673.png" alt="ZeroPass Login Screen" width="200" />
+  <img src="app_demo/Screenshot_1753124677.png" alt="Password Dashboard" width="200" />
+  <img src="app_demo/Screenshot_1753124680.png" alt="Add New Password" width="200" />
+  <img src="app_demo/Screenshot_1753124682.png" alt="Password Categories" width="200" />
+  <img src="app_demo/Screenshot_1753124685.png" alt="Security Settings" width="200" />
+</p>
+
+<p align="center">
+  <img src="app_demo/Screenshot_1753285950.png" alt="Welcome Screen" width="200" />
+  <img src="app_demo/Screenshot_1753285956.png" alt="Registration Flow" width="200" />
+  <img src="app_demo/Screenshot_1753285959.png" alt="Password Generator" width="200" />
+  <img src="app_demo/Screenshot_1753285961.png" alt="Profile Management" width="200" />
+  <img src="app_demo/Screenshot_1753285963.png" alt="App Navigation" width="200" />
 </p>
 
 ---
