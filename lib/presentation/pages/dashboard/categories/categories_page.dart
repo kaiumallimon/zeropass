@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
-import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
