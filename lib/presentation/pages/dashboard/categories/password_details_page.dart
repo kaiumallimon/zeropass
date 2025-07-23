@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/detailed_password_provider.dart';
-import 'package:zeropass/shared/widgets/custom_button.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
 class PasswordDetailsPage extends StatefulWidget {

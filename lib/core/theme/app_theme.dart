@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -47,22 +48,23 @@ class AppTheme {
   // Dark color scheme
   static final darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xFF60A5FA), // Light Blue
-    onPrimary: Color(0xFF1E3A8A), // Dark Blue
+    primary: CupertinoColors.activeOrange, // Light Orange
+    onPrimary: Colors.black, // Dark Orange
     secondary: Color(0xFFD1D5DB), // Light Gray
     onSecondary: Colors.black,
-    background: Color(0xFF1F2937), // Dark Gray background
+    background: Color.fromARGB(255, 25, 25, 25), // Dark Gray background
     onBackground: Colors.white,
-    surface: Color(0xFF374151), // Dark surface (cards, inputs)
+    surface: Color.fromARGB(255, 25, 25, 25), // Dark surface (cards, inputs)
     onSurface: Colors.white,
-    error: Color(0xFFF87171), // Soft Red
-    onError: Colors.black,
+    error: Color.fromARGB(255, 255, 39, 39), // Soft Red
+    onError: const Color.fromARGB(255, 255, 255, 255),
   );
 
   // Dark theme data
   static final darkTheme = ThemeData(
     colorScheme: darkColorScheme,
     useMaterial3: true,
+    fontFamily: 'Sora',
     scaffoldBackgroundColor: darkColorScheme.background,
     appBarTheme: AppBarTheme(
       backgroundColor: darkColorScheme.primary,

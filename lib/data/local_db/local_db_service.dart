@@ -7,6 +7,8 @@ class LocalDatabaseService {
   static const String _profileKey = 'current';
   static const String _welcomeBox = 'welcome';
   static const String _welcomeKey = 'shown';
+  static const String _themeBox = 'theme';
+  static const String _themeKey = 'isDark';
 
   static bool _isInitialized = false;
 
@@ -64,6 +66,16 @@ class LocalDatabaseService {
   static bool isLoggedIn() {
     final box = Hive.box<ProfileModel>(_profileBox);
     return box.get(_profileKey) != null;
+  }
+
+  static Future<void> setDarkMode(bool isDark) async {
+    final box = await Hive.openBox(_themeBox);
+    await box.put(_themeKey, isDark);
+  }
+
+  static Future<bool> getDarkMode() async {
+    final box = await Hive.openBox(_themeBox);
+    return box.get(_themeKey, defaultValue: false);
   }
 
   // Logout: clear all except welcome

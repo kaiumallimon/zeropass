@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
@@ -40,6 +41,7 @@ class ProfilePage extends StatelessWidget {
                               context.read<ProfileProvider>().logout(context);
                             },
                             color: theme.colorScheme.errorContainer,
+                            textColor: theme.colorScheme.onErrorContainer,
                             width: double.infinity,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedLogout01,
@@ -125,7 +127,7 @@ class ProfilePage extends StatelessWidget {
         icon: HugeIcons.strokeRoundedMoon02,
         label: 'Dark Mode',
         onTap: () {
-          // Theme toggle or settings page
+          context.go('/profile/theme');
         },
       ),
       _ProfileMenuItem(
@@ -152,13 +154,6 @@ class ProfilePage extends StatelessWidget {
         border: Border.all(
           color: theme.colorScheme.onSurface.withOpacity(0.15),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.onSurface.withOpacity(0.05),
-            blurRadius: 80,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(

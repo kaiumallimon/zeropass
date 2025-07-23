@@ -58,14 +58,15 @@ class CustomButton extends StatelessWidget {
                 ? CupertinoActivityIndicator(
                     color: isBordered
                         ? Theme.of(context).colorScheme.primary
-                        : textColor ?? Colors.white,
+                        : textColor ?? Theme.of(context).colorScheme.onPrimary,
                   )
                 : Text(
                     text,
                     style: TextStyle(
                       color: isBordered
                           ? Theme.of(context).colorScheme.primary
-                          : textColor ?? Colors.white,
+                          : textColor ??
+                                Theme.of(context).colorScheme.onPrimary,
                       fontSize: 15,
                     ),
                   ),

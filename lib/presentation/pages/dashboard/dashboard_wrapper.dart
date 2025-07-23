@@ -21,75 +21,64 @@ class DashboardWrapper extends StatelessWidget {
     return Scaffold(
       body: child,
 
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: theme.colorScheme.onSurface.withOpacity(.1),
-              width: .5,
-            ),
-          ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: provider.selectedIndex,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(
+          context,
+        ).colorScheme.onSurface.withOpacity(.5),
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
         ),
-
-        child: BottomNavigationBar(
-          currentIndex: provider.selectedIndex,
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Theme.of(
-            context,
-          ).colorScheme.onSurface.withOpacity(.5),
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 13,
+        onTap: (index) => provider.setTab(context, index),
+        items: [
+          BottomNavigationBarItem(
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedHome11,
+              color: currentIndex == 0
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
+            ),
+            label: 'Home',
           ),
-          onTap: (index) => provider.setTab(context, index),
-          items: [
-            BottomNavigationBarItem(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedHome11,
-                color: currentIndex == 0
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(.5),
-              ),
-              label: 'Home',
+          BottomNavigationBarItem(
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedDashboardSquare02,
+              color: currentIndex == 1
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            BottomNavigationBarItem(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedDashboardSquare02,
-                color: currentIndex == 1
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(.5),
-              ),
-              label: 'Categories',
+            label: 'Categories',
+          ),
+          BottomNavigationBarItem(
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedAddCircleHalfDot,
+              color: currentIndex == 2
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            BottomNavigationBarItem(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedAddCircleHalfDot,
-                color: currentIndex == 2
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(.5),
-              ),
-              label: 'Add Password',
+            label: 'Add Password',
+          ),
+          BottomNavigationBarItem(
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedAiMagic,
+              color: currentIndex == 3
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            BottomNavigationBarItem(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedAiMagic,
-                color: currentIndex == 3
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(.5),
-              ),
-              label: 'Generate',
+            label: 'Generate',
+          ),
+          BottomNavigationBarItem(
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedUserCircle02,
+              color: currentIndex == 4
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            BottomNavigationBarItem(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedUserCircle02,
-                color: currentIndex == 4
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(.5),
-              ),
-              label: 'Profile',
-            ),
-          ],
-        ),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

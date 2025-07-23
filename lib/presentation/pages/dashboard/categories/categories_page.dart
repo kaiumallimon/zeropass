@@ -75,6 +75,17 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            'Your passwords are categorized here. Tap on a category to view the passwords within it.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(
+                                .7,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
                           Expanded(
                             child: GridView.builder(
                               itemCount: provider.categories.length,

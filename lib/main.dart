@@ -15,6 +15,7 @@ import 'package:zeropass/presentation/providers/login_provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
+import 'package:zeropass/presentation/providers/theme_provider.dart';
 import 'package:zeropass/presentation/providers/welcome_provider.dart';
 import 'package:zeropass/routes/app_routes.dart';
 
@@ -40,15 +41,8 @@ void main() async {
   /// initialize local database service
   await LocalDatabaseService.init();
 
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SplashProvider()),
         ChangeNotifierProvider(create: (_) => WelcomeProvider()),
@@ -66,15 +60,28 @@ class MyApp extends StatelessWidget {
 
         ChangeNotifierProvider(create: (_) => CategorizedPasswordsProvider()),
         ChangeNotifierProvider(create: (_) => DetailedPasswordProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MaterialApp.router(
-        title: 'ZeroPass',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        routerDelegate: AppRoutes.router.routerDelegate,
-        routeInformationParser: AppRoutes.router.routeInformationParser,
-        routeInformationProvider: AppRoutes.router.routeInformationProvider,
-      ),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+
+    
+    return MaterialApp.router(
+      title: 'ZeroPass',
+      debugShowCheckedModeBanner: false,
+      theme: themeProvider.currentTheme,
+      routerDelegate: AppRoutes.router.routerDelegate,
+      routeInformationParser: AppRoutes.router.routeInformationParser,
+      routeInformationProvider: AppRoutes.router.routeInformationProvider,
     );
   }
 }
