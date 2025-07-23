@@ -64,6 +64,7 @@ Below are some screenshots of ZeroPass in action:
      ```env
      SUPABASE_URL=your_supabase_url_here
      SUPABASE_ANON_KEY=your_supabase_anon_key_here
+     ZEROBOUNCE_API_KEY = your_zerobounce_api_key
      ```
 
 4. **Generate necessary files (if needed):**
