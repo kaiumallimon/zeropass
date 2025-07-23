@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
@@ -56,7 +57,7 @@ class CategorizedPasswordsPage extends StatelessWidget {
                       height: 100,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.onSurface.withOpacity(.15),
+                        color: theme.colorScheme.onSurface.withOpacity(.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -111,165 +112,191 @@ class CategorizedPasswordsPage extends StatelessWidget {
                         key: Key(categoryId),
                         itemCount: provider.categorizedPasswords.length,
                         itemBuilder: (context, index) {
-                          return Dismissible(
-                            key: Key(
-                              provider.categorizedPasswords[index]['id'],
-                            ),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              color: Colors.red,
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                            confirmDismiss: (direction) async {
-                              // Optional: Confirm before deleting
-                              return await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Delete Password?'),
-                                  content: const Text(
-                                    'Are you sure you want to delete this password?',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: const Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: const Text('Delete'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-
-                            onDismissed: (direction) {
-                              // Delete the password
-                              provider.deletePassword(
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Dismissible(
+                              key: Key(
                                 provider.categorizedPasswords[index]['id'],
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Password Deleted',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onErrorContainer,
+                              ),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                color: Colors.red,
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              confirmDismiss: (direction) async {
+                                // Optional: Confirm before deleting
+                                return await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Delete Password?'),
+                                    content: const Text(
+                                      'Are you sure you want to delete this password?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+
+                              onDismissed: (direction) {
+                                // Delete the password
+                                provider.deletePassword(
+                                  provider.categorizedPasswords[index]['id'],
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Password Deleted',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: theme
+                                                .colorScheme
+                                                .onErrorContainer,
+                                          ),
+                                    ),
+                                    backgroundColor:
+                                        theme.colorScheme.errorContainer,
+
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  backgroundColor:
-                                      theme.colorScheme.errorContainer,
+                                );
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.go(
+                                    "/categories/categorized-passwords/details",
+                                    extra: provider.categorizedPasswords[index]
+                                      ..addAll({
+                                        'categoryId': categoryId,
+                                        'categoryName': categoryName,
+                                      }),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
 
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: const EdgeInsets.all(10),
-                                  shape: RoundedRectangleBorder(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1,
+                                      color: theme.colorScheme.onSurface
+                                          .withOpacity(.1),
+                                    ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              padding: EdgeInsets.all(8),
-
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(.1),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            color: theme.colorScheme.primary
-                                                .withOpacity(.15),
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              provider
-                                                  .categorizedPasswords[index]['name']
-                                                  .substring(0, 1)
-                                                  .toUpperCase(),
-                                              style: theme
-                                                  .textTheme
-                                                  .headlineMedium
-                                                  ?.copyWith(
-                                                    color: theme
-                                                        .colorScheme
-                                                        .primary,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Row(
                                           children: [
-                                            Text(
-                                              provider
-                                                  .categorizedPasswords[index]['name'],
-                                              style: theme.textTheme.titleSmall,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                            Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                color: theme.colorScheme.primary
+                                                    .withOpacity(.15),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  provider
+                                                      .categorizedPasswords[index]['name']
+                                                      .substring(0, 1)
+                                                      .toUpperCase(),
+                                                  style: theme
+                                                      .textTheme
+                                                      .headlineMedium
+                                                      ?.copyWith(
+                                                        color: theme
+                                                            .colorScheme
+                                                            .primary,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
+                                              ),
                                             ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              provider
-                                                  .categorizedPasswords[index]['username'],
-
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    color: theme
-                                                        .colorScheme
-                                                        .onSurface
-                                                        .withOpacity(.7),
+                                            const SizedBox(width: 15),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize
+                                                    .min, // allow dynamic height
+                                                children: [
+                                                  Text(
+                                                    provider
+                                                        .categorizedPasswords[index]['name'],
+                                                    style: theme
+                                                        .textTheme
+                                                        .bodySmall,
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    provider
+                                                        .categorizedPasswords[index]['username'],
+                                                    style: theme
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color: theme
+                                                              .colorScheme
+                                                              .onSurface
+                                                              .withOpacity(.7),
+                                                        ),
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                      ),
 
-                                  IconButton(
-                                    onPressed: () async {
-                                      await provider.copyPassword(
-                                        context,
-                                        index,
-                                      );
-                                    },
-                                    icon: HugeIcon(
-                                      icon: HugeIcons.strokeRoundedCopy01,
-                                      color: theme.colorScheme.primary,
-                                      size: 23,
-                                    ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          await provider.copyPassword(
+                                            context,
+                                            index,
+                                          );
+                                        },
+                                        icon: HugeIcon(
+                                          icon: HugeIcons.strokeRoundedCopy01,
+                                          color: theme.colorScheme.primary,
+                                          size: 23,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           );

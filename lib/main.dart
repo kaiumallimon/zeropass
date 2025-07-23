@@ -9,6 +9,7 @@ import 'package:zeropass/presentation/providers/add_password_provider.dart';
 import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
+import 'package:zeropass/presentation/providers/detailed_password_provider.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
 import 'package:zeropass/presentation/providers/login_provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         ),
 
         ChangeNotifierProvider(create: (_) => CategorizedPasswordsProvider()),
+        ChangeNotifierProvider(create: (_) => DetailedPasswordProvider()),
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',
