@@ -34,15 +34,13 @@ Below are screenshots of ZeroPass in action:
   <img src="app_demo/Screenshot_1753124680.png" alt="Add New Password" width="200" />
   <img src="app_demo/Screenshot_1753124682.png" alt="Password Categories" width="200" />
   <img src="app_demo/Screenshot_1753124685.png" alt="Security Settings" width="200" />
-</p>
-
-<p align="center">
   <img src="app_demo/Screenshot_1753285950.png" alt="Welcome Screen" width="200" />
   <img src="app_demo/Screenshot_1753285956.png" alt="Registration Flow" width="200" />
   <img src="app_demo/Screenshot_1753285959.png" alt="Password Generator" width="200" />
   <img src="app_demo/Screenshot_1753285961.png" alt="Profile Management" width="200" />
   <img src="app_demo/Screenshot_1753285963.png" alt="App Navigation" width="200" />
 </p>
+
 
 ---
 
