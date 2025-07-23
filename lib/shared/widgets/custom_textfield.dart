@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
     this.controller,
     this.obscureText = false,
     this.prefixIcon,
+    this.sideWidget,
   });
 
   final String? label;
@@ -22,6 +23,7 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final Widget? prefixIcon;
+  final Widget? sideWidget;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -55,59 +57,74 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
             ),
           ),
-        SizedBox(
-          width: widget.width ?? double.infinity,
-          height: widget.height ?? 50,
-          child: TextField(
-            controller: widget.controller,
-            keyboardType: widget.keyboardType,
-            obscureText: _obscure,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface,
-              fontSize: 15,
-            ),
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              hintStyle: TextStyle(
-                fontSize: 15,
-                color: colorScheme.onSurface.withOpacity(0.5),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: colorScheme.onSurface.withOpacity(0.2),
-                  width: 2,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: colorScheme.onSurface.withOpacity(0.2),
-                  width: 2,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: colorScheme.primary, width: 2),
-              ),
-              prefixIcon: widget.prefixIcon,
-              suffixIcon: widget.obscureText
-                  ? GestureDetector(
-                      child: HugeIcon(
-                        icon: _obscure
-                            ? HugeIcons.strokeRoundedViewOff
-                            : HugeIcons.strokeRoundedView,
-                        color: colorScheme.primary.withOpacity(0.6),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: widget.width ?? double.infinity,
+                height: widget.height ?? 50,
+                child: TextField(
+                  controller: widget.controller,
+                  keyboardType: widget.keyboardType,
+                  obscureText: _obscure,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontSize: 15,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: widget.hintText,
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      color: colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: colorScheme.onSurface.withOpacity(0.2),
+                        width: 2,
                       ),
-                      onTap: () {
-                        setState(() {
-                          _obscure = !_obscure;
-                        });
-                      },
-                    )
-                  : null,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: colorScheme.onSurface.withOpacity(0.2),
+                        width: 2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: colorScheme.primary,
+                        width: 2,
+                      ),
+                    ),
+                    prefixIcon: widget.prefixIcon,
+                    suffixIcon: widget.obscureText
+                        ? GestureDetector(
+                            child: HugeIcon(
+                              icon: _obscure
+                                  ? HugeIcons.strokeRoundedViewOff
+                                  : HugeIcons.strokeRoundedView,
+                              color: colorScheme.primary.withOpacity(0.6),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _obscure = !_obscure;
+                              });
+                            },
+                          )
+                        : null,
+                  ),
+                ),
+              ),
             ),
-          ),
+
+            if (widget.sideWidget != null) ...[
+              const SizedBox(width: 10),
+              widget.sideWidget!,
+            ],
+          ],
         ),
       ],
     );

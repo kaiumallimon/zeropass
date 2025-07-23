@@ -6,6 +6,7 @@ import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/data/services/database_service.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/utils/encryptor_helper.dart';
+import 'package:zeropass/utils/password_generator.dart';
 
 class AddPasswordProvider extends ChangeNotifier {
   final CategoryProvider _categoryProvider;
@@ -61,6 +62,12 @@ class AddPasswordProvider extends ChangeNotifier {
 
   final _service = DatabaseService();
   final _secureStorage = SecureStorageService();
+
+  void generatePassword() {
+    String generatePassword = PasswordUtils.generateStrongPassword(length: 12);
+    passwordController.text = generatePassword;
+    confirmPasswordController.text = generatePassword;
+  }
 
   Future<void> savePassword(BuildContext context) async {
     if (validate().isNotEmpty) {

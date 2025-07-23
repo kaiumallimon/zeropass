@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
 import 'package:zeropass/presentation/providers/add_password_provider.dart';
@@ -92,6 +93,32 @@ class AddPasswordPage extends StatelessWidget {
                 controller: addPasswordProvider.passwordController,
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
+                sideWidget: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: IconButton(
+                    onPressed: () {
+                      addPasswordProvider.generatePassword();
+                    },
+
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedAiMagic,
+                      color: theme.colorScheme.primary,
+                    ),
+                    tooltip: 'Generate Password',
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: theme.colorScheme.primary.withOpacity(.4),
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               CustomTextField(
