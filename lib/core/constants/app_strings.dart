@@ -40,4 +40,7 @@ class AppStrings {
   static final String add_password_tip =
       'To help you keep your passwords organized, each password needs to be saved under a category. '
       'Please make sure you’ve created at least one category from the Categories menu before adding a password.';
+
+  static final String passwordGenerateSubtitle =
+      'Choose the types of characters to include - uppercase, lowercase, digits, and special symbols - and adjust the length to meet your security standards. Once generated, you can copy the password and check its strength instantly';
 }
