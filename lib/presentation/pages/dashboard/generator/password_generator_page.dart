@@ -158,8 +158,21 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: const Text('Password copied!'),
-                                    duration: const Duration(seconds: 2),
+                                    content: Text(
+                                      'Password copied to clipboard',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: theme.colorScheme.onPrimary,
+                                          ),
+                                    ),
+                                    backgroundColor:
+                                        theme.colorScheme.primaryContainer,
+
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.all(10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 );
                               },

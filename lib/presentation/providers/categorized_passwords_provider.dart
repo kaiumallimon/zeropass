@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -102,6 +101,21 @@ class CategorizedPasswordsProvider extends ChangeNotifier {
         content: Text('Password copied to clipboard'),
       ),
     );
+  }
+
+  Future<void> deletePassword(String id) async {
+    _setLoading(true);
+    try {
+      _categorizedPasswords.removeWhere((item) => item['id'] == id);
+      notifyListeners();
+
+      await supabase.from('passwords').delete().eq('id', id);
+    } catch (error) {
+      errorMessage = error.toString();
+      notifyListeners();
+    } finally {
+      _setLoading(false);
+    }
   }
 
   void clear() {

@@ -7,7 +7,7 @@ class DatabaseService {
   Future<void> insertData(String table, Map<String, dynamic> data) async {
     try {
       // final response =
-       await supabase.from(table).insert(data);
+      await supabase.from(table).insert(data);
     } catch (error) {
       debugPrint('Error inserting data: $error');
       rethrow;
@@ -28,6 +28,15 @@ class DatabaseService {
       return List<Map<String, dynamic>>.from(response);
     } catch (error) {
       debugPrint('Error fetching data: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteData(String table, String id) async {
+    try {
+      await supabase.from(table).delete().eq('id', id);
+    } catch (error) {
+      debugPrint('Error deleting data: $error');
       rethrow;
     }
   }
