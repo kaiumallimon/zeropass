@@ -13,12 +13,5 @@ class ProfileModel extends HiveObject {
   @HiveField(2)
   final String email;
 
-  // Add more fields as needed, e.g. avatar, etc.
-
-  ProfileModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    // Add more fields here
-  });
+  ProfileModel({required this.id, required this.name, required this.email});
 }

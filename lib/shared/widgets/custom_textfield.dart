@@ -90,14 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: colorScheme.primary, width: 2),
               ),
-              prefixIcon:
-                  widget.prefixIcon ??
-                  (widget.obscureText
-                      ? HugeIcon(
-                          icon: HugeIcons.strokeRoundedLock,
-                          color: colorScheme.primary.withOpacity(0.6),
-                        )
-                      : null),
+              prefixIcon: widget.prefixIcon,
               suffixIcon: widget.obscureText
                   ? GestureDetector(
                       child: HugeIcon(

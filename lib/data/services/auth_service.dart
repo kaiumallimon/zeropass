@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/data/models/login_model.dart';
+import 'package:zeropass/utils/encryptor_helper.dart';
 
 class AuthService {
   /// Singleton instance of AuthService
@@ -28,10 +29,21 @@ class AuthService {
 
         // insert name & email in profile table using the user id
         try {
+          // generate salt:
+          final salt = EncryptionHelper.generateSalt();
+          final saltBytes = EncryptionHelper.saltFromBase64(salt);
+          final aesKey = EncryptionHelper.deriveAesKeyFromPassword(
+            password,
+            saltBytes,
+          );
+          final encryptedName = EncryptionHelper.aesEncrypt(name, aesKey);
+          final encryptedEmail = EncryptionHelper.aesEncrypt(email, aesKey);
+
           final profileResponse = await supabase.from('profiles').insert({
             'id': user.id,
-            'name': name,
-            'email': email,
+            'name': encryptedName,
+            'email': encryptedEmail,
+            'salt': salt,
           });
 
           debugPrint('Profile inserted: $profileResponse');
@@ -79,7 +91,7 @@ class AuthService {
       // Fetch user profile from 'profiles' table
       final profileResponse = await supabase
           .from('profiles')
-          .select('id, name, email')
+          .select('id, name, email, salt')
           .eq('id', user.id)
           .single();
 
