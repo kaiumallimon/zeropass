@@ -131,9 +131,11 @@ class AddPasswordPage extends StatelessWidget {
               const SizedBox(height: 20),
               CustomTextField(
                 label: 'Note',
-                hintText: 'Enter any additional information',
+                hintText: 'Enter any additional information (Optional)',
                 controller: addPasswordProvider.notesController,
                 keyboardType: TextInputType.multiline,
+                isExpandable: true,
+                height: 150,
               ),
               const SizedBox(height: 20),
               Consumer<AddPasswordProvider>(

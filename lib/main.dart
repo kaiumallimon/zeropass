@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         title: 'ZeroPass',
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         routerDelegate: AppRoutes.router.routerDelegate,
         routeInformationParser: AppRoutes.router.routeInformationParser,

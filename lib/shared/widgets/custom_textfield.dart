@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.sideWidget,
+    this.isExpandable = false,
   });
 
   final String? label;
@@ -24,6 +25,7 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? sideWidget;
+  final bool isExpandable;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -67,6 +69,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 child: TextField(
                   controller: widget.controller,
                   keyboardType: widget.keyboardType,
+                  expands: widget.isExpandable,
+                  maxLines: widget.isExpandable ? null : 1,
                   obscureText: _obscure,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
