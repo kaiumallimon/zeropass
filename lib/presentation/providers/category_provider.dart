@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:zeropass/data/services/database_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:zeropass/data/local_db/secure_st_service.dart';
+import 'package:zeropass/utils/encryptor_helper.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final TextEditingController searchController = TextEditingController();
 
-  final _service = DatabaseService();
+  // final _service = DatabaseService();
+  final supabase = Supabase.instance.client;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -30,7 +33,25 @@ class CategoryProvider extends ChangeNotifier {
     setLoading(true);
 
     try {
-      final response = await _service.fetchData('categories');
+      final userId = supabase.auth.currentUser!.id;
+      final response = await supabase
+          .from('categories')
+          .select()
+          .eq('user_id', userId)
+          .order('created_at', ascending: true);
+
+      final aesString = await SecureStorageService().getAesKey();
+      final aesKey = EncryptionHelper.saltFromBase64(aesString!);
+
+      // decrypt category names:
+      for (var category in response) {
+        if (category['name'] != null) {
+          category['name'] = EncryptionHelper.aesDecrypt(
+            category['name'],
+            aesKey,
+          );
+        }
+      }
       setCategories(response);
       setLoading(false);
       setErrorMessage(null);
