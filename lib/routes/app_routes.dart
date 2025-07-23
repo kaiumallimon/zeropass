@@ -6,6 +6,7 @@ import 'package:zeropass/presentation/pages/auth/register_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/add_password/add_password.dart';
 import 'package:zeropass/presentation/pages/dashboard/categories/add_categories_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/categories/categories_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/categories/categorized_passwords.dart';
 import 'package:zeropass/presentation/pages/dashboard/dashboard_wrapper.dart';
 import 'package:zeropass/presentation/pages/dashboard/generator/password_generator_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/home/home_page.dart';
@@ -66,6 +67,19 @@ class AppRoutes {
                 path: '/add-category',
                 builder: (context, state) {
                   return const AddCategoriesPage();
+                },
+              ),
+              GoRoute(
+                path: '/categorized-passwords',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>;
+                  final categoryId = extra['categoryId'] as String;
+                  final categoryName = extra['categoryName'] as String;
+
+                  return CategorizedPasswordsPage(
+                    categoryId: categoryId,
+                    categoryName: categoryName,
+                  );
                 },
               ),
             ],

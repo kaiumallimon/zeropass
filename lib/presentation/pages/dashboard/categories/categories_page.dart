@@ -24,6 +24,9 @@ class _CategoriesPageState extends State<CategoriesPage> {
       appBar: AppBar(
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
+        elevation: 0,
+        shadowColor: theme.colorScheme.surface,
+        surfaceTintColor: theme.colorScheme.surface,
         toolbarHeight: 80,
         title: const Text('Categories'),
       ),
@@ -103,43 +106,57 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                     ? name
                                     : 'No Name';
 
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary
-                                        .withOpacity(.15),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.go(
+                                      '/categories/categorized-passwords',
+                                      extra: {
+                                        'categoryId': category['id'],
+                                        'categoryName': displayName,
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary
+                                          .withOpacity(.15),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Text(
+                                              '${index + 1}.',
+                                              style: theme
+                                                  .textTheme
+                                                  .displaySmall
+                                                  ?.copyWith(
+                                                    color: theme
+                                                        .colorScheme
+                                                        .primary
+                                                        .withOpacity(.3),
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                        Center(
                                           child: Text(
-                                            '${index + 1}.',
-                                            style: theme.textTheme.displaySmall
+                                            displayName,
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.bodyMedium
                                                 ?.copyWith(
                                                   color: theme
                                                       .colorScheme
-                                                      .primary
-                                                      .withOpacity(.3),
+                                                      .onSurface,
                                                 ),
                                           ),
                                         ),
-                                      ),
-                                      Center(
-                                        child: Text(
-                                          displayName,
-                                          textAlign: TextAlign.center,
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                color:
-                                                    theme.colorScheme.onSurface,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 );
                               },

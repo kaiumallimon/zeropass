@@ -1,12 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zeropass/core/constants/app_strings.dart';
+import 'package:zeropass/presentation/providers/add_password_provider.dart';
+import 'package:zeropass/presentation/providers/category_provider.dart';
+import 'package:zeropass/shared/widgets/custom_button.dart';
+import 'package:zeropass/shared/widgets/custom_dropdown_menu.dart';
+import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
 class AddPasswordPage extends StatelessWidget {
   const AddPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final addPasswordProvider = context.watch<AddPasswordProvider>();
+
+    final categoryProvider = context.watch<CategoryProvider>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await addPasswordProvider.loadCategories();
+    });
+
     return Scaffold(
-      body: SafeArea(child: Center(child: Text('Add Password Page'))),
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.surface,
+        foregroundColor: theme.colorScheme.onSurface,
+        elevation: 0,
+        shadowColor: theme.colorScheme.surface,
+        surfaceTintColor: theme.colorScheme.surface,
+        toolbarHeight: 80,
+        title: const Text('Add New Password'),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 40),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppStrings.add_password_tip,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(.7),
+                ),
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Name*',
+                hintText: 'Enter app/website name',
+                keyboardType: TextInputType.text,
+                controller: addPasswordProvider.nameController,
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Url',
+                hintText: 'Enter app/website url (Skip if not applicable)',
+                controller: addPasswordProvider.urlController,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 20),
+              CustomDropdownField<String>(
+                label: 'Select Category*',
+                value: addPasswordProvider.selectedCategoryId,
+                items: categoryProvider.categories.map((category) {
+                  final name = (category['name'] as String?)?.trim();
+                  final displayName = (name != null && name.isNotEmpty)
+                      ? name
+                      : 'Uncategorized';
+                  return DropdownMenuItem<String>(
+                    value: category['id'],
+                    child: Text(displayName),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  addPasswordProvider.setSelectedCategory(value);
+                },
+                hintText: 'Choose a category',
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Username/Email*',
+                hintText: 'Enter username or email',
+                keyboardType: TextInputType.emailAddress,
+                controller: addPasswordProvider.usernameController,
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Password*',
+                hintText: 'Enter password',
+                controller: addPasswordProvider.passwordController,
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Confirm Password*',
+                hintText: 'Enter password',
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+                controller: addPasswordProvider.confirmPasswordController,
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                label: 'Note',
+                hintText: 'Enter any additional information',
+                controller: addPasswordProvider.notesController,
+                keyboardType: TextInputType.multiline,
+              ),
+              const SizedBox(height: 20),
+              Consumer<AddPasswordProvider>(
+                builder: (context, provider, child) {
+                  return CustomButton(
+                    text: 'Save Password',
+                    width: double.infinity,
+                    isLoading: provider.isLoading,
+                    onPressed: () async {
+                      await provider.savePassword(context);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

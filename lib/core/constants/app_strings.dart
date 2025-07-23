@@ -32,6 +32,12 @@ class AppStrings {
 
   static final String forgotPassword = 'Forgot Password?';
 
+  // ignore: non_constant_identifier_names
   static final String add_category_tip =
       'This is where you can add a new category. Please enter the category name below.';
+
+  // ignore: non_constant_identifier_names
+  static final String add_password_tip =
+      'To help you keep your passwords organized, each password needs to be saved under a category. '
+      'Please make sure you’ve created at least one category from the Categories menu before adding a password.';
 }

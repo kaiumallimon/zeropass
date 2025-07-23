@@ -8,6 +8,7 @@ import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/data/models/profile_model.dart';
 import 'package:zeropass/data/services/auth_service.dart';
+import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/utils/encryptor_helper.dart';
 
@@ -101,6 +102,7 @@ class LoginProvider extends ChangeNotifier {
       if (context.mounted) {
         // Refresh ProfileProvider manually after saving profile
         context.read<ProfileProvider>().refreshProfile();
+        context.read<CategoryProvider>().fetchCategories();
 
         context.go('/home');
       }
