@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:zeropass/core/theme/app_theme.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/providers/add_category_provider.dart';
 import 'package:zeropass/presentation/providers/add_password_provider.dart';
