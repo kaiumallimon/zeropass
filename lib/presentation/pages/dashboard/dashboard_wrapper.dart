@@ -21,62 +21,59 @@ class DashboardWrapper extends StatelessWidget {
     return Scaffold(
       body: child,
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: provider.selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(
-          context,
-        ).colorScheme.onSurface.withOpacity(.5),
-        selectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 13,
-        ),
-        onTap: (index) => provider.setTab(context, index),
-        items: [
-          BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: provider.selectedIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        indicatorColor: theme.colorScheme.primary,
+
+        onDestinationSelected: (value) {
+          provider.setTab(context, value);
+        },
+        destinations: [
+          NavigationDestination(
             icon: HugeIcon(
               icon: HugeIcons.strokeRoundedHome11,
               color: currentIndex == 0
-                  ? theme.colorScheme.primary
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: HugeIcon(
               icon: HugeIcons.strokeRoundedDashboardSquare02,
               color: currentIndex == 1
-                  ? theme.colorScheme.primary
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
             label: 'Categories',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: HugeIcon(
               icon: HugeIcons.strokeRoundedAddCircleHalfDot,
               color: currentIndex == 2
-                  ? theme.colorScheme.primary
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            label: 'Add Password',
+            label: 'Add',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: HugeIcon(
               icon: HugeIcons.strokeRoundedAiMagic,
               color: currentIndex == 3
-                  ? theme.colorScheme.primary
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
             label: 'Generate',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: HugeIcon(
-              icon: HugeIcons.strokeRoundedUserCircle02,
+              icon: HugeIcons.strokeRoundedShield01,
               color: currentIndex == 4
-                  ? theme.colorScheme.primary
+                  ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            label: 'Profile',
+            label: 'TOT',
           ),
         ],
       ),

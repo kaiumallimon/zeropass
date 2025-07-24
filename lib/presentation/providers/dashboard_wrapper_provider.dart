@@ -8,7 +8,7 @@ class DashboardWrapperProvider extends ChangeNotifier {
     '/categories',
     '/add-password',
     '/generator',
-    '/profile',
+    '/totp',
   ];
 
   int _selectedIndex = 0;

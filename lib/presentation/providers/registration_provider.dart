@@ -30,6 +30,9 @@ class RegistrationProvider extends ChangeNotifier {
     if (emailController.text.isEmpty) {
       return "Email cannot be empty";
     }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(emailController.text)) {
+      return "Please enter a valid email address";
+    }
     if (passwordController.text.isEmpty || passwordController.text.length < 6) {
       return "Password must be at least 6 characters long";
     }
@@ -49,57 +52,45 @@ class RegistrationProvider extends ChangeNotifier {
     } else {
       setLoading(true);
       try {
-        if (!await EmailVerifier().verifyEmail(emailController.text)) {
+        // Simulate registration
+        final String name = nameController.text.trim();
+        final String email = emailController.text.trim();
+        final String password = passwordController.text.trim();
+
+        final response = await _authService.registerUser(
+          name: name,
+          email: email,
+          password: password,
+        );
+
+        if (!response) {
           if (context.mounted) {
             setLoading(false);
             QuickAlert.show(
               context: context,
               type: QuickAlertType.error,
-              title: "Invalid Email",
-              text: "Invalid email address. Please enter a valid email.",
+              title: "Registration Failed",
+              text: "An error occurred while registering. Please try again.",
             );
           }
         } else {
-          // Simulate registration
-          final String name = nameController.text.trim();
-          final String email = emailController.text.trim();
-          final String password = passwordController.text.trim();
+          if (context.mounted) {
+            setLoading(false);
+            QuickAlert.show(
+              context: context,
+              type: QuickAlertType.success,
+              title: "Registration Successful",
+              text: "You have successfully registered. Please log in.",
+              onConfirmBtnTap: () {
+                nameController.clear();
+                emailController.clear();
+                passwordController.clear();
 
-          final response = await _authService.registerUser(
-            name: name,
-            email: email,
-            password: password,
-          );
+                setLoading(false);
 
-          if (!response) {
-            if (context.mounted) {
-              setLoading(false);
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.error,
-                title: "Registration Failed",
-                text: "An error occurred while registering. Please try again.",
-              );
-            }
-          } else {
-            if (context.mounted) {
-              setLoading(false);
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.success,
-                title: "Registration Successful",
-                text: "You have successfully registered. Please log in.",
-                onConfirmBtnTap: () {
-                  nameController.clear();
-                  emailController.clear();
-                  passwordController.clear();
-
-                  setLoading(false);
-
-                  context.go('/login');
-                },
-              );
-            }
+                context.go('/login');
+              },
+            );
           }
         }
       } catch (error) {

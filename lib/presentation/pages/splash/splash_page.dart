@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/core/constants/app_assets.dart';
 import 'package:zeropass/core/constants/app_strings.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
+import 'package:zeropass/presentation/providers/theme_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -30,6 +32,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    SystemChrome.setSystemUIOverlayStyle(
+      context.read<ThemeProvider>().getOverlayStyle(context),
+    );
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,

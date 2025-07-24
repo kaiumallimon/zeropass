@@ -8,10 +8,7 @@ class EmailVerifier {
   Future<bool> verifyEmail(String email) async {
     try {
       final apiKey = dotenv.env['ZEROBOUNCE_API_KEY'];
-      
-      
-      
-      
+
       if (apiKey == null || apiKey.isEmpty) {
         throw Exception(
           'ZeroBounce API key not found in environment variables.',
@@ -21,6 +18,8 @@ class EmailVerifier {
       final requestUrl = "$baseUrl?api_key=$apiKey&email=$email";
 
       final response = await http.get(Uri.parse(requestUrl));
+
+      print('Email Verifier response: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

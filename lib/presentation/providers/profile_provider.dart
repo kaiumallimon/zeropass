@@ -5,6 +5,7 @@ import 'package:quickalert/quickalert.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/data/local_db/secure_st_service.dart';
+import 'package:zeropass/data/local_db/totp_secrets_service.dart';
 import 'package:zeropass/data/models/profile_model.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 
@@ -39,6 +40,7 @@ class ProfileProvider extends ChangeNotifier {
         Supabase.instance.client.auth.signOut();
         await SecureStorageService().deleteAesKey();
         context.read<DashboardWrapperProvider>().setTab(context, 0);
+        await TotpSecretStorageService().deleteAllEntries();
         _profile = null;
         notifyListeners();
         if (context.mounted) {

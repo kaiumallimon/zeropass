@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
@@ -15,6 +16,7 @@ import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
 import 'package:zeropass/presentation/providers/splash_provider.dart';
 import 'package:zeropass/presentation/providers/theme_provider.dart';
+import 'package:zeropass/presentation/providers/totp_provider.dart';
 import 'package:zeropass/presentation/providers/welcome_provider.dart';
 import 'package:zeropass/routes/app_routes.dart';
 
@@ -36,6 +38,9 @@ void main() async {
       authFlowType: AuthFlowType.pkce,
     ),
   );
+
+  /// Initialize Hive database
+  await Hive.initFlutter();
 
   /// initialize local database service
   await LocalDatabaseService.init();
@@ -60,6 +65,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CategorizedPasswordsProvider()),
         ChangeNotifierProvider(create: (_) => DetailedPasswordProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => TotpProvider()),
       ],
       child: const MyApp(),
     ),
@@ -73,7 +79,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
 
-    
     return MaterialApp.router(
       title: 'ZeroPass',
       debugShowCheckedModeBanner: false,

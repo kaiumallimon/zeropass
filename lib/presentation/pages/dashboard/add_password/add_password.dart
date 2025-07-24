@@ -8,20 +8,27 @@ import 'package:zeropass/shared/widgets/custom_button.dart';
 import 'package:zeropass/shared/widgets/custom_dropdown_menu.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
-class AddPasswordPage extends StatelessWidget {
+class AddPasswordPage extends StatefulWidget {
   const AddPasswordPage({super.key});
+
+  @override
+  State<AddPasswordPage> createState() => _AddPasswordPageState();
+}
+
+class _AddPasswordPageState extends State<AddPasswordPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<AddPasswordProvider>().loadCategories();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     final addPasswordProvider = context.watch<AddPasswordProvider>();
-
     final categoryProvider = context.watch<CategoryProvider>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await addPasswordProvider.loadCategories();
-    });
 
     return Scaffold(
       appBar: AppBar(

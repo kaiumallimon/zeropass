@@ -8,10 +8,10 @@ class AppTheme {
     onPrimary: Colors.white,
     secondary: Color(0xFF6B7280), // Gray
     onSecondary: Colors.white,
-    background: Color(0xFFF9FAFB), // Light background
-    onBackground: Color(0xFF111827), // Dark text
+    background: Color.fromARGB(255, 255, 255, 255), // Light background
+    onBackground: Color.fromARGB(255, 0, 0, 0), // Dark text
     surface: Color(0xFFFFFFFF), // Card & inputs
-    onSurface: Color(0xFF111827), // Text on surface
+    onSurface: Color.fromARGB(255, 0, 0, 0), // Text on surface
     error: Color(0xFFEF4444), // Red
     onError: Colors.white,
   );
