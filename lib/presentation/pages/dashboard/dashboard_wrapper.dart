@@ -19,9 +19,10 @@ class DashboardWrapper extends StatelessWidget {
     );
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       body: child,
-
       bottomNavigationBar: NavigationBar(
+        surfaceTintColor: theme.colorScheme.surface,
         selectedIndex: provider.selectedIndex,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         indicatorColor: theme.colorScheme.primary,
@@ -73,7 +74,7 @@ class DashboardWrapper extends StatelessWidget {
                   ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface.withOpacity(.5),
             ),
-            label: 'TOT',
+            label: 'TOTP',
           ),
         ],
       ),

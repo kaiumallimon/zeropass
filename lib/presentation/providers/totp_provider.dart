@@ -126,7 +126,8 @@ class TotpProvider extends ChangeNotifier {
       final digits = extractedData['Digits'] ?? 6;
       final issuer = extractedData['Issuer'];
 
-      if ([name, secret, issuer].any((e) => e == null || e!.isEmpty) || digits <= 0) {
+      if ([name, secret, issuer].any((e) => e == null || e!.isEmpty) ||
+          digits <= 0) {
         if (context.mounted) {
           QuickAlert.show(
             context: context,
@@ -218,5 +219,117 @@ class TotpProvider extends ChangeNotifier {
       "Digits": int.tryParse(queryParams['digits'] ?? '6') ?? 6,
       "Issuer": queryParams['issuer'] ?? uri.host,
     };
+  }
+
+  Future<void> deleteTotpEntry(String secret) async {
+    try {
+      await TotpSecretStorageService().deleteEntryBySecret(secret);
+      _totpEntries.removeWhere((entry) => entry.secret == secret);
+      notifyListeners();
+    } catch (error) {
+      setErrorMessage("Failed to delete TOTP entry: $error");
+    }
+  }
+
+  final nameController = TextEditingController();
+  final secretController = TextEditingController();
+  final digitsController = TextEditingController();
+  final issuerController = TextEditingController();
+
+  Future<bool> manualEntry(BuildContext context) async {
+    setLoading(true);
+    try {
+      final name = nameController.text.trim();
+      final secret = secretController.text.trim();
+      final issuer = issuerController.text.trim();
+      final digits = int.tryParse(digitsController.text.trim()) ?? 6;
+
+      if ([name, secret, issuer].any((e) => e.isEmpty) || digits <= 0) {
+        if (context.mounted) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Error",
+            text: "Please fill out all fields correctly.",
+          );
+        }
+        return false;
+      }
+
+      final aesString = await _secureStorage.getAesKey();
+      if (aesString == null) {
+        if (context.mounted) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Error",
+            text: "Encryption key not found.",
+          );
+        }
+        return false;
+      }
+
+      final aesBase64 = EncryptionHelper.saltFromBase64(aesString);
+
+      final encryptedName = EncryptionHelper.aesEncrypt(name, aesBase64);
+      final encryptedSecret = EncryptionHelper.aesEncrypt(secret, aesBase64);
+      final encryptedIssuer = EncryptionHelper.aesEncrypt(issuer, aesBase64);
+
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        if (context.mounted) {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            title: "Error",
+            text: "User not authenticated.",
+          );
+        }
+        return false;
+      }
+
+      final totpEntrySupabase = {
+        'name': encryptedName,
+        'secret': encryptedSecret,
+        'digits': digits,
+        'issuer': encryptedIssuer,
+        'user_id': user.id,
+      };
+
+      final totpEntryLocal = {
+        'name': name,
+        'secret': secret,
+        'digits': digits,
+        'issuer': issuer,
+      };
+
+      await Supabase.instance.client
+          .from('totp_entries')
+          .insert(totpEntrySupabase);
+
+      await TotpSecretStorageService().addEntry(
+        TotpEntry.fromJson(totpEntryLocal),
+      );
+
+      nameController.clear();
+      secretController.clear();
+      digitsController.clear();
+      issuerController.clear();
+
+      await loadTotpEntries(context);
+      return true;
+    } catch (error) {
+      if (context.mounted) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: "Error",
+          text: error.toString(),
+        );
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
   }
 }

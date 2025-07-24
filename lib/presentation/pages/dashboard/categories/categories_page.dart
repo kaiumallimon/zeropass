@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
+import 'package:zeropass/shared/widgets/custom_button.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -60,14 +61,27 @@ class _CategoriesPageState extends State<CategoriesPage> {
                         );
                       } else if (provider.categories.isEmpty) {
                         return Center(
-                          child: Text(
-                            'No categories found, tap the plus icon to add a new category.',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(
-                                .7,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'No categories found, tap the plus icon to add a new category.',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(.7),
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 20),
+                              CustomButton(
+                                text: 'Refresh',
+                                onPressed: () {
+                                  context
+                                      .read<CategoryProvider>()
+                                      .fetchCategories();
+                                },
+                              ),
+                            ],
                           ),
                         );
                       }

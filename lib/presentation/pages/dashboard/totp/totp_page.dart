@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zeropass/data/local_db/totp_secrets_service.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_qr_code_page.dart';
 import 'package:zeropass/presentation/providers/totp_provider.dart';
 
@@ -58,92 +59,158 @@ class _TotpPageState extends State<TotpPage> {
                 );
               }
 
-              return ListView.builder(
-                itemCount: provider.totpEntries.length,
-                itemBuilder: (context, index) {
-                  final entry = provider.totpEntries[index];
-                  final otp = provider.currentOtps[entry.name] ?? '••••••';
+              return Column(
+                children: [
+                  // Row(
+                  //   spacing: 10,
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Icon(
+                  //       Icons.info_outline,
+                  //       color: theme.colorScheme.onSurface.withOpacity(.5),
+                  //     ),
+                  //     Expanded(
+                  //       child: Text(
+                  //         'Long press on an entry to copy the OTP to clipboard.',
+                  //         style: theme.textTheme.bodyMedium?.copyWith(
+                  //           color: theme.colorScheme.onSurface.withOpacity(.5),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: provider.totpEntries.length,
+                      itemBuilder: (context, index) {
+                        final entry = provider.totpEntries[index];
+                        final otp =
+                            provider.currentOtps[entry.name] ?? '••••••';
 
-                  return Dismissible(
-                    key: Key(entry.secret),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) async {
-                      await TotpSecretStorageService().deleteEntryBySecret(
-                        entry.secret,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          margin: EdgeInsets.all(10),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                          content: Text(
-                            '${entry.name} deleted',
-                            style: TextStyle(
-                              color: theme.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: theme.colorScheme.onSurface.withOpacity(.1),
-                            width: 1.5,
-                          ),
-                        ),
-                        tileColor: theme.colorScheme.primary.withOpacity(.1),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(entry.issuer),
-                            const SizedBox(height: 4),
-                            Text(
-                              otp,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.primary,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Dismissible(
+                            background: Container(
+                              color: theme.colorScheme.error,
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(right: 20),
+                              child: Icon(
+                                Icons.delete,
+                                color: theme.colorScheme.onError,
                               ),
                             ),
-                          ],
-                        ),
-                        trailing: Consumer<TotpProvider>(
-                          builder: (context, provider, _) {
-                            final remaining = provider.secondsRemaining;
-                            final progress = remaining / 30;
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 32,
-                                  height: 32,
-                                  child: CircularProgressIndicator(
-                                    value: progress,
-                                    strokeWidth: 4,
-                                    color: theme.colorScheme.primary,
-                                    backgroundColor: theme.colorScheme.onSurface
-                                        .withOpacity(0.1),
+                            key: Key(entry.secret),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) async {
+                              await provider.deleteTotpEntry(entry.secret);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  margin: EdgeInsets.all(10),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor:
+                                      theme.colorScheme.primaryContainer,
+                                  content: Text(
+                                    '${entry.name} deleted',
+                                    style: TextStyle(
+                                      color:
+                                          theme.colorScheme.onPrimaryContainer,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  remaining.toString(),
-                                  style: const TextStyle(fontSize: 11),
+                              );
+                            },
+                            child: ListTile(
+                              onLongPress: () {
+                                Clipboard.setData(ClipboardData(text: otp));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    margin: EdgeInsets.all(10),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    backgroundColor:
+                                        theme.colorScheme.primaryContainer,
+                                    content: Text(
+                                      'OTP copied to clipboard',
+                                      style: TextStyle(
+                                        color: theme
+                                            .colorScheme
+                                            .onPrimaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(.1),
+                                  width: 1.5,
                                 ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
+                              ),
+                              tileColor: theme.colorScheme.primary.withOpacity(
+                                .1,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    entry.issuer == entry.name
+                                        ? entry.issuer
+                                        : '${entry.issuer} (${(entry.name).split(':').last})',
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    otp,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Consumer<TotpProvider>(
+                                builder: (context, provider, _) {
+                                  final remaining = provider.secondsRemaining;
+                                  final progress = remaining / 30;
+                                  return Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 32,
+                                        height: 32,
+                                        child: CircularProgressIndicator(
+                                          value: progress,
+                                          strokeWidth: 4,
+                                          color: theme.colorScheme.primary,
+                                          backgroundColor: theme
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.1),
+                                        ),
+                                      ),
+                                      Text(
+                                        remaining.toString(),
+                                        style: const TextStyle(fontSize: 11),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               );
             },
           ),
@@ -216,7 +283,8 @@ class _TotpPageState extends State<TotpPage> {
                           leading: Icon(Icons.keyboard),
                           title: Text('Enter Key Manually'),
                           onTap: () {
-                            // Navigator.pushNamed(context, '/totp/add');
+                            Navigator.pop(context);
+                            context.go('/totp/add-manual');
                           },
                         ),
                       ],

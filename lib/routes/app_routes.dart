@@ -13,6 +13,7 @@ import 'package:zeropass/presentation/pages/dashboard/generator/password_generat
 import 'package:zeropass/presentation/pages/dashboard/home/home_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/profile_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/theme_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_manual_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_qr_code_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_page.dart';
 import 'package:zeropass/presentation/pages/splash/splash_page.dart';
@@ -137,10 +138,10 @@ class AppRoutes {
               transitionsBuilder: _fadeTransition,
             ),
             routes: [
-              // GoRoute(
-              //   path: '/add',
-              //   builder: (context, state) => const TotpAddQrCodePage(),
-              // ),
+              GoRoute(
+                path: '/add-manual',
+                builder: (context, state) => const TotpAddManualPage(),
+              ),
             ],
           ),
         ],
