@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.surface,
               foregroundColor: Theme.of(context).colorScheme.onSurface,
               elevation: 0,
-              shadowColor: Theme.of(context).colorScheme.surface,
+              shadowColor: Colors.transparent,
               surfaceTintColor: Theme.of(context).colorScheme.surface,
               toolbarHeight: 100,
               title: Padding(

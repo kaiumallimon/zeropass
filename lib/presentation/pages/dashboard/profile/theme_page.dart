@@ -14,7 +14,7 @@ class ThemePage extends StatelessWidget {
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
         elevation: 0,
-        shadowColor: theme.colorScheme.surface,
+        shadowColor: Colors.transparent,
         surfaceTintColor: theme.colorScheme.surface,
         toolbarHeight: 80,
         title: const Text('Theme Settings'),
