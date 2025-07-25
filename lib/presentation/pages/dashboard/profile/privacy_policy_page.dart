@@ -64,7 +64,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Last updated: January 26, 2025',
+                      'Last updated: July 26, 2025',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.6),
                         fontStyle: FontStyle.italic,

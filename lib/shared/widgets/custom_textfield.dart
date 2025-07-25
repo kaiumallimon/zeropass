@@ -16,6 +16,7 @@ class CustomTextField extends StatefulWidget {
     this.sideWidget,
     this.isExpandable = false,
     this.isEditable = true,
+    this.onChanged,
   });
 
   final String? label;
@@ -29,6 +30,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? sideWidget;
   final bool isExpandable;
   final bool isEditable;
+  final Function(String value)? onChanged;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -126,6 +128,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       width: widget.width ?? double.infinity,
                       height: widget.height ?? 50,
                       child: TextField(
+                        onChanged: (value) => widget.onChanged?.call(value),
                         enabled: widget.isEditable,
                         controller: widget.controller,
                         keyboardType: widget.keyboardType,

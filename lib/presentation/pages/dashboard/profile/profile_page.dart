@@ -113,14 +113,14 @@ class ProfilePage extends StatelessWidget {
         icon: HugeIcons.strokeRoundedUser02,
         label: 'Edit Profile',
         onTap: () {
-          // Navigate to edit profile
+          context.go('/home/profile/edit-profile');
         },
       ),
       _ProfileMenuItem(
         icon: HugeIcons.strokeRoundedLockPassword,
         label: 'Change Password',
         onTap: () {
-          // Navigate to change password
+          context.go('/home/profile/change-password');
         },
       ),
       _ProfileMenuItem(

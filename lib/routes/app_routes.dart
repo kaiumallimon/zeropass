@@ -16,6 +16,8 @@ import 'package:zeropass/presentation/pages/dashboard/profile/theme_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/about_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/help_support_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/privacy_policy_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/profile/change_password_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/profile/edit_profile_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_manual_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_qr_code_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_page.dart';
@@ -74,6 +76,14 @@ class AppRoutes {
                   GoRoute(
                     path: '/theme',
                     builder: (context, state) => const ThemePage(),
+                  ),
+                  GoRoute(
+                    path: '/edit-profile',
+                    builder: (context, state) => const EditProfilePage(),
+                  ),
+                  GoRoute(
+                    path: '/change-password',
+                    builder: (context, state) => const ChangePasswordPage(),
                   ),
                   GoRoute(
                     path: '/about',
