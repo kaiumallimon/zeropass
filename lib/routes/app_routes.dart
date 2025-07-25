@@ -13,6 +13,9 @@ import 'package:zeropass/presentation/pages/dashboard/generator/password_generat
 import 'package:zeropass/presentation/pages/dashboard/home/home_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/profile_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/theme_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/profile/about_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/profile/help_support_page.dart';
+import 'package:zeropass/presentation/pages/dashboard/profile/privacy_policy_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_manual_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_qr_code_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_page.dart';
@@ -71,6 +74,18 @@ class AppRoutes {
                   GoRoute(
                     path: '/theme',
                     builder: (context, state) => const ThemePage(),
+                  ),
+                  GoRoute(
+                    path: '/about',
+                    builder: (context, state) => const AboutPage(),
+                  ),
+                  GoRoute(
+                    path: '/help-support',
+                    builder: (context, state) => const HelpSupportPage(),
+                  ),
+                  GoRoute(
+                    path: '/privacy-policy',
+                    builder: (context, state) => const PrivacyPolicyPage(),
                   ),
                 ],
               ),

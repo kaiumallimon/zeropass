@@ -133,17 +133,23 @@ class ProfilePage extends StatelessWidget {
       _ProfileMenuItem(
         icon: HugeIcons.strokeRoundedInformationCircle,
         label: 'About',
-        onTap: () {},
+        onTap: () {
+          context.go('/home/profile/about');
+        },
       ),
       _ProfileMenuItem(
         icon: HugeIcons.strokeRoundedHelpCircle,
         label: 'Help & Support',
-        onTap: () {},
+        onTap: () {
+          context.go('/home/profile/help-support');
+        },
       ),
       _ProfileMenuItem(
         icon: HugeIcons.strokeRoundedPoliceBadge,
         label: 'Privacy Policy',
-        onTap: () {},
+        onTap: () {
+          context.go('/home/profile/privacy-policy');
+        },
       ),
     ];
 
