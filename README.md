@@ -1,87 +1,122 @@
-# ZeroPass
+# 🔐 ZeroPass - Secure Password Manager
 
-A modern, secure, and user-friendly password manager built with Flutter.
+<div align="center">
 
-## Overview
+![ZeroPass Logo](assets/images/shield.png)
 
-**ZeroPass** is a cross-platform password manager that prioritizes user privacy and data security. With end-to-end encryption, seamless sync, and a beautiful interface, ZeroPass helps you generate, store, and manage strong passwords for all your accounts—anywhere, anytime.
+**A modern, cross-platform password manager built with Flutter that prioritizes privacy, security, and user experience.**
 
-Built with Flutter 3.8.1+ and modern development practices, ZeroPass offers a robust solution for password management across Android, iOS, Windows, macOS, Linux, and Web platforms.
+[![Flutter](https://img.shields.io/badge/Flutter-3.8.1+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+</div>
+
+---
+
+## 📖 Table of Contents
+
+- [Overview](#-overview)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Security Implementation](#-security-implementation)
+- [TOTP Implementation](#-totp-implementation)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Development](#-development)
+- [Security Considerations](#-security-considerations)
+- [License](#-license)
+- [Support](#-support)
+
+---
+
+## 🌟 Overview
+
+ZeroPass is a secure, cross-platform password manager built using Flutter. It prioritizes user privacy and data protection through AES-256 encryption and a zero-knowledge architecture. Designed for usability and accessibility, ZeroPass works seamlessly across mobile, desktop, and web platforms.
+
+### Key Highlights
+
+- Zero-knowledge architecture: Your master password is never transmitted or stored.
+- AES-256 encryption for all sensitive data.
+- Offline-first with optional Supabase cloud sync.
+- Built-in TOTP generator with QR code support.
+- Clean Material Design 3 UI.
 
 ---
 
 ## ✨ Features
 
-- **End-to-End Encryption:** Your passwords are encrypted locally before they ever leave your device using industry-standard crypto and encrypt packages.
-- **Secure Storage:** Uses `flutter_secure_storage` and `hive` for encrypted local storage of sensitive data.
-- **Password Generator:** Instantly create strong, unique passwords for every account with customizable criteria.
-- **Cross-Platform Sync:** Access your passwords on mobile and desktop with seamless synchronization powered by Supabase.
-- **Organize & Categorize:** Easily manage and categorize your logins for quick access and better organization.
-- **Modern UI:** Clean, intuitive design with custom Sora and Space Grotesk fonts and smooth navigation.
-- **Account Management:** Secure authentication with registration, login, and password recovery flows.
-- **Clipboard Integration:** Quick copy-to-clipboard functionality for passwords and usernames.
-- **State Management:** Efficient state management using Provider pattern for reactive UI updates.
+### Password Management
+- Encrypted local storage using Hive.
+- Customizable password generator.
+- Category-based organization and search.
+- One-tap copy to clipboard.
+
+### TOTP (Two-Factor Authenticator)
+- Scan QR codes or add secrets manually.
+- Real-time 6-digit code generation.
+- Encrypted storage of secrets.
+- Full RFC 6238 compatibility.
+
+### Security
+- PBKDF2 key derivation with SHA-256 and 100k iterations.
+- Secure clipboard auto-clear.
+- Optional biometric lock and session timeout.
+- All network communication secured via HTTPS.
+
+### Cross-Platform Sync (Optional)
+- Encrypted backup and sync using Supabase.
+- Conflict-aware multi-device support.
 
 ---
 
-## 📸 App Screenshots
+## 🏗️ Architecture
 
-Below are screenshots of ZeroPass in action:
+ZeroPass is structured using a layered clean architecture:
 
-<p align="center">
-  <img src="app_demo/Screenshot_1753124673.png" alt="ZeroPass Login Screen" width="200" />
-  <img src="app_demo/Screenshot_1753124677.png" alt="Password Dashboard" width="200" />
-  <img src="app_demo/Screenshot_1753124680.png" alt="Add New Password" width="200" />
-  <img src="app_demo/Screenshot_1753124682.png" alt="Password Categories" width="200" />
-  <img src="app_demo/Screenshot_1753124685.png" alt="Security Settings" width="200" />
-  <img src="app_demo/Screenshot_1753285950.png" alt="Welcome Screen" width="200" />
-  <img src="app_demo/Screenshot_1753285956.png" alt="Registration Flow" width="200" />
-  <img src="app_demo/Screenshot_1753285959.png" alt="Password Generator" width="200" />
-  <img src="app_demo/Screenshot_1753285961.png" alt="Profile Management" width="200" />
-  <img src="app_demo/Screenshot_1753285963.png" alt="App Navigation" width="200" />
-</p>
-
+```mermaid
+graph TB
+    A[Presentation Layer] --> B[Domain Layer]
+    B --> C[Data Layer]
+    C --> D[Hive - Local DB]
+    C --> E[Supabase - Cloud Sync]
+    C --> F[Secure Storage]
+```
 
 ---
 
-## 🚀 Getting Started
+## 🛡️ Security Implementation
 
-### Prerequisites
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (3.8.1 or higher)
-- [Dart SDK](https://dart.dev/get-dart) (included with Flutter)
-- A [Supabase](https://supabase.com/) project (for sync features)
+### Key Derivation and Encryption
 
-### Installation
+```dart
+final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64))
+  ..init(Pbkdf2Parameters(salt, 100000, 32));
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/kaiumallimon/zeropass.git
-   cd zeropass
-   ```
+- AES-256 in CBC mode with unique IVs.
+- Salted key derivation using PBKDF2.
+- Secure storage via flutter_secure_storage.
 
-2. **Install dependencies:**
-   ```bash
-   flutter pub get
-   ```
+---
 
-3. **Set up environment variables:**
-   - Create a `.env` file in the root directory
-   - Add your Supabase credentials:
-     ```env
-     SUPABASE_URL=your_supabase_url_here
-     SUPABASE_ANON_KEY=your_supabase_anon_key_here
-     ZEROBOUNCE_API_KEY = your_zerobounce_api_key
-     ```
+## 🔢 TOTP Implementation
 
-4. **Generate necessary files (if needed):**
-   ```bash
-   flutter packages pub run build_runner build
-   ```
+- Follows RFC 6238 with 6-digit HMAC-SHA1 codes.
+- Generates codes locally every 30 seconds.
+- Secrets are stored encrypted.
+- Compatible with major services like Google Authenticator.
 
-5. **Run the app:**
-   ```bash
-   flutter run
-   ```
+---
+
+## 🛠️ Tech Stack
+
+- **Flutter 3.8.1+**, **Dart 3.0+**
+- **Hive**, **Flutter Secure Storage**
+- **Supabase** for backend sync and auth
+- **Encrypt**, **Crypto**, **PointyCastle** for cryptography
+- **Provider**, **GoRouter**, **QR Code Scanner Plus**, **QuickAlert**
 
 ---
 
@@ -89,94 +124,89 @@ Below are screenshots of ZeroPass in action:
 
 ```
 lib/
-├── core/           # App-wide constants and themes
-├── data/           # Data models, storage, and sync logic
-│   ├── local_db/   # Local database services
-│   ├── models/     # Data models
-│   └── services/   # External services integration
-├── presentation/   # UI pages and widgets
-│   ├── pages/      # App screens and pages
-│   └── providers/  # State management providers
-├── routes/         # App navigation
-├── shared/         # Reusable widgets
-└── utils/          # Utility functions
+├── core/                          # Core application components
+│   ├── constants/                 # App-wide constants
+│   │   ├── app_assets.dart       # Asset path definitions
+│   │   └── app_strings.dart      # Localized strings
+│   └── theme/                     # UI theming
+│       └── app_theme.dart        # Material Design 3 theme
+│
+├── data/                          # Data layer implementation
+│   ├── local_db/                 # Local database services
+│   │   ├── local_db_service.dart # Main local storage
+│   │   ├── secure_st_service.dart# Secure storage wrapper
+│   │   └── totp_secrets_service.dart # TOTP data management
+│   ├── models/                    # Data models
+│   │   ├── password_model.dart   # Password entity
+│   │   ├── profile_model.dart    # User profile
+│   │   ├── category_model.dart   # Password categories
+│   │   └── totp_entry_model.dart # TOTP entries
+│   └── services/                  # External service integrations
+│       └── auth_service.dart     # Supabase authentication
+│
+├── presentation/                  # UI and presentation logic
+│   ├── pages/                    # Application screens
+│   │   ├── welcome/              # Onboarding flow
+│   │   ├── auth/                 # Authentication screens
+│   │   ├── dashboard/            # Main app screens
+│   │   │   ├── home/            # Dashboard home
+│   │   │   ├── passwords/       # Password management
+│   │   │   ├── categories/      # Category management
+│   │   │   ├── totp/           # TOTP management
+│   │   │   ├── generator/       # Password generator
+│   │   │   └── profile/         # User profile
+│   │   └── splash/              # App initialization
+│   └── providers/                # State management
+│       ├── auth_providers/       # Authentication state
+│       ├── password_providers/   # Password management state
+│       ├── totp_provider.dart   # TOTP state management
+│       └── theme_provider.dart  # UI theme state
+│
+├── routes/                        # Navigation configuration
+│   └── app_routes.dart           # GoRouter setup
+│
+├── shared/                        # Shared components
+│   └── widgets/                  # Reusable UI widgets
+│       ├── custom_button.dart   # Styled buttons
+│       ├── custom_text_field.dart# Input components
+│       └── loading_widget.dart  # Loading indicators
+│
+├── utils/                         # Utility functions
+│   ├── encryptor_helper.dart    # Encryption utilities
+│   └── password_generator.dart  # Password generation
+│
+└── main.dart                     # Application entry point
 ```
 
-```
-assets/
-├── fonts/          # Custom fonts (Sora, Space Grotesk)
-├── images/         # Image assets
-└── svgs/           # SVG icons
-```
-
 ---
 
-## 🛡️ Security
-- All sensitive data is encrypted using the `encrypt`, `crypto`, and `pointycastle` packages.
-- Local storage uses `flutter_secure_storage` and `hive` for maximum security.
-- No passwords are ever stored or transmitted in plain text.
-- Authentication flows use PKCE (Proof Key for Code Exchange) for enhanced security.
 
----
 
-## 📦 Dependencies
+## 🔐 Security Considerations
 
-### Core Dependencies
-- [Flutter](https://flutter.dev/) - UI toolkit
-- [Supabase Flutter](https://pub.dev/packages/supabase_flutter) - Backend services and sync
-- [Provider](https://pub.dev/packages/provider) - State management
-- [Go Router](https://pub.dev/packages/go_router) - Navigation
-
-### Security & Storage
-- [Flutter Secure Storage](https://pub.dev/packages/flutter_secure_storage) - Secure local storage
-- [Hive](https://pub.dev/packages/hive) - NoSQL database
-- [Encrypt](https://pub.dev/packages/encrypt) - Encryption utilities
-- [Crypto](https://pub.dev/packages/crypto) - Cryptographic functions
-- [PointyCastle](https://pub.dev/packages/pointycastle) - Advanced cryptography
-
-### UI & User Experience
-- [HugeIcons](https://pub.dev/packages/hugeicons) - Icon library
-- [QuickAlert](https://pub.dev/packages/quickalert) - Alert dialogs
-- [Clipboard](https://pub.dev/packages/clipboard) - Clipboard operations
-
-### Utilities
-- [Flutter DotEnv](https://pub.dev/packages/flutter_dotenv) - Environment variables
-- [HTTP](https://pub.dev/packages/http) - HTTP client
-- [UUID](https://pub.dev/packages/uuid) - UUID generation
-- [Path Provider](https://pub.dev/packages/path_provider) - File system paths
-
-### Development Dependencies
-- [Flutter Lints](https://pub.dev/packages/flutter_lints) - Linting rules
-- [Hive Generator](https://pub.dev/packages/hive_generator) - Code generation
-- [Build Runner](https://pub.dev/packages/build_runner) - Build system
-
----
-
-## 🖋️ Customization
-- Custom fonts: Sora, Space Grotesk (see `pubspec.yaml`)
-- Easily swap themes or add dark mode in `lib/core/theme/app_theme.dart`
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open issues or submit pull requests for new features, bug fixes, or improvements.
-
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
+- AES-256 encryption on all sensitive data.
+- Master password never stored or transmitted.
+- Secure clipboard with auto-clear timer.
+- Supabase auth uses PKCE flow.
+- Optional biometric authentication.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgements
-- [Flutter](https://flutter.dev/)
-- [Supabase](https://supabase.com/)
-- [Open Source Community](https://github.com/)
+## 📞 Support
+
+- GitHub Issues: [ZeroPass Issues](https://github.com/kaiumallimon/zeropass/issues)
+- Email: info.zeropass@gmail.com
+
+---
+
+<div align="center">
+
+**Crafted with care by [Kaium Al Limon](https://github.com/kaiumallimon)**
+
+</div>
