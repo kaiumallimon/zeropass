@@ -8,6 +8,7 @@ import 'package:zeropass/data/local_db/local_db_service.dart';
 import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/home_provider.dart';
+import 'package:zeropass/presentation/providers/totp_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,7 +25,11 @@ class _HomePageState extends State<HomePage> {
     super.didChangeDependencies();
     if (!_initialized) {
       _initialized = true;
-      context.read<HomeProvider>().init(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<HomeProvider>().init(context);
+        // Initialize TOTP provider to start the timer for latest TOTP entries
+        context.read<TotpProvider>().loadTotpEntries(context);
+      });
     }
   }
 
@@ -164,6 +169,64 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(height: 10),
                           _buildLatestPasswordsList(),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Latest Categories',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context
+                                      .read<DashboardWrapperProvider>()
+                                      .setTab(context, 2);
+                                },
+                                child: Text(
+                                  'View All',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.primary
+                                        .withOpacity(.7),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          _buildLatestCategoriesList(),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Latest TOTP',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context
+                                      .read<DashboardWrapperProvider>()
+                                      .setTab(context, 3);
+                                },
+                                child: Text(
+                                  'View All',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.primary
+                                        .withOpacity(.7),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          _buildLatestTotpList(),
                         ],
                       ),
                     ),
@@ -371,7 +434,227 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             );
-            ;
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLatestCategoriesList() {
+    final theme = Theme.of(context);
+    return Consumer<HomeProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoading) {
+          return SizedBox(
+            height: 200,
+            child: const Center(child: CupertinoActivityIndicator()),
+          );
+        }
+
+        if (provider.categories.isEmpty) {
+          return const Center(child: Text('No categories found.'));
+        }
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: provider.categories.length,
+          itemBuilder: (context, index) {
+            final category = provider.categories[index];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  context.read<DashboardWrapperProvider>().setTab(
+                    context,
+                    1,
+                    shouldGo: false,
+                  );
+                  context.go(
+                    "/categories/categorized-passwords",
+                    extra: {
+                      'categoryId': category['id'],
+                      'categoryName': category['name'],
+                      'from': 'home',
+                    },
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: theme.colorScheme.onSurface.withOpacity(.1),
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondary.withOpacity(.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            category['name']?.substring(0, 1)?.toUpperCase() ??
+                                '?',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              color: theme.colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              category['name'] ?? 'Unknown Category',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: theme.colorScheme.onSurface.withOpacity(.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLatestTotpList() {
+    final theme = Theme.of(context);
+    return Consumer<TotpProvider>(
+      builder: (context, totpProvider, _) {
+        if (totpProvider.isLoading) {
+          return SizedBox(
+            height: 200,
+            child: const Center(child: CupertinoActivityIndicator()),
+          );
+        }
+
+        if (totpProvider.totpEntries.isEmpty) {
+          return const Center(child: Text('No TOTP entries found.'));
+        }
+
+        // Show only the first 5 entries for "Latest TOTP"
+        final latestEntries = totpProvider.totpEntries.take(5).toList();
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: latestEntries.length,
+          itemBuilder: (context, index) {
+            final entry = latestEntries[index];
+            final otp = totpProvider.currentOtps[entry.id] ?? '••••••';
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  context.read<DashboardWrapperProvider>().setTab(context, 3);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    onLongPress: () {
+                      Clipboard.setData(ClipboardData(text: otp));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          margin: EdgeInsets.all(10),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          backgroundColor: theme.colorScheme.primaryContainer,
+                          content: Text(
+                            'OTP copied to clipboard',
+                            style: TextStyle(
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
+                        color: theme.colorScheme.onSurface.withOpacity(.1),
+                        width: 1,
+                      ),
+                    ),
+                    // tileColor: theme.colorScheme.primary.withOpacity(.1),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.issuer == entry.name
+                              ? entry.issuer
+                              : '${entry.issuer} (${(entry.name).split(':').last})',
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          otp,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Consumer<TotpProvider>(
+                      builder: (context, provider, _) {
+                        final remaining = provider.secondsRemaining;
+                        final progress = remaining / 30;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 4,
+                                color: theme.colorScheme.primary,
+                                backgroundColor: theme.colorScheme.onSurface
+                                    .withOpacity(0.1),
+                              ),
+                            ),
+                            Text(
+                              remaining.toString(),
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            );
           },
         );
       },

@@ -30,6 +30,9 @@ class HomeProvider extends ChangeNotifier {
   List<PasswordModel> _passwords = [];
   List<PasswordModel> get passwords => _passwords;
 
+  List<Map<String, dynamic>> _categories = [];
+  List<Map<String, dynamic>> get categories => _categories;
+
   Future<void> init(BuildContext context) async {
     _setLoading(true);
     try {
@@ -53,7 +56,7 @@ class HomeProvider extends ChangeNotifier {
 
       _errorMessage = null;
 
-      await fetchPasswords();
+      await Future.wait([fetchPasswords(), fetchCategories()]);
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
@@ -87,8 +90,14 @@ class HomeProvider extends ChangeNotifier {
         item['url'] = item['url'] == null
             ? 'N/A'
             : EncryptionHelper.aesDecrypt(item['url'], aesKey);
-        item['username'] = EncryptionHelper.aesDecrypt(item['username'], aesKey);
-        item['password'] = EncryptionHelper.aesDecrypt(item['password'], aesKey);
+        item['username'] = EncryptionHelper.aesDecrypt(
+          item['username'],
+          aesKey,
+        );
+        item['password'] = EncryptionHelper.aesDecrypt(
+          item['password'],
+          aesKey,
+        );
         item['note'] = item['note'] == null
             ? 'N/A'
             : EncryptionHelper.aesDecrypt(item['note'], aesKey);
@@ -101,6 +110,40 @@ class HomeProvider extends ChangeNotifier {
     } finally {
       _isLoadingPasswords = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) {
+        _errorMessage = "User not authenticated";
+        return;
+      }
+
+      final response = await _supabase
+          .from('categories')
+          .select()
+          .eq('user_id', userId)
+          .order('created_at', ascending: false)
+          .limit(5);
+
+      final aesString = await SecureStorageService().getAesKey();
+      final aesKey = EncryptionHelper.saltFromBase64(aesString!);
+
+      _categories = response.map<Map<String, dynamic>>((category) {
+        if (category['name'] != null) {
+          category['name'] = EncryptionHelper.aesDecrypt(
+            category['name'],
+            aesKey,
+          );
+        }
+        return category;
+      }).toList();
+
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
     }
   }
 

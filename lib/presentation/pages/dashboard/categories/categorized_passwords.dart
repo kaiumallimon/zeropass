@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
+import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/shared/widgets/custom_textfield.dart';
 
 class CategorizedPasswordsPage extends StatelessWidget {
@@ -11,10 +12,12 @@ class CategorizedPasswordsPage extends StatelessWidget {
     super.key,
     required this.categoryId,
     required this.categoryName,
+    required this.from,
   });
 
   final String categoryId;
   final String categoryName;
+  final String from;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,19 @@ class CategorizedPasswordsPage extends StatelessWidget {
         shadowColor: Colors.transparent,
         surfaceTintColor: theme.colorScheme.surface,
         toolbarHeight: 80,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
+          onPressed: () {
+            if (from == 'home') {
+              context.read<DashboardWrapperProvider>().setTab(
+                context,
+                0,
+              );
+            } else {
+              context.pop();
+            }
+          },
+        ),
         title: Text('$categoryName Passwords'),
       ),
       body: RefreshIndicator(

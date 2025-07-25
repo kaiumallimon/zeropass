@@ -86,7 +86,7 @@ class _TotpPageState extends State<TotpPage> {
                       itemBuilder: (context, index) {
                         final entry = provider.totpEntries[index];
                         final otp =
-                            provider.currentOtps[entry.name] ?? '••••••';
+                            provider.currentOtps[entry.id] ?? '••••••';
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),

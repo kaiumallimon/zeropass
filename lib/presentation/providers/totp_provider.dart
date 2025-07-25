@@ -88,9 +88,9 @@ class TotpProvider extends ChangeNotifier {
           length: entry.digits,
           algorithm: Algorithm.SHA1,
         );
-        otps[entry.name] = otp;
+        otps[entry.id] = otp;
       } catch (_) {
-        otps[entry.name] = "Error";
+        otps[entry.id] = "Error";
       }
     }
     return otps;

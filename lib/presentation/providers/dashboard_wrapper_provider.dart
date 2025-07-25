@@ -15,14 +15,16 @@ class DashboardWrapperProvider extends ChangeNotifier {
   int get selectedIndex => _selectedIndex;
 
   /// Update index and navigate to corresponding tab route
-  void setTab(BuildContext context, int index) {
+  void setTab(BuildContext context, int index,{bool shouldGo = true}) {
     if (index == _selectedIndex) return; // Avoid unnecessary navigation
 
     _selectedIndex = index;
     notifyListeners();
 
     // Navigate to the corresponding route
-    context.go(tabs[index]);
+    if (shouldGo) {
+      context.go(tabs[index]);
+    }
   }
 
   /// Sync index with current route (e.g. on app start or route change)

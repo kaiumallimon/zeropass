@@ -97,10 +97,12 @@ class AppRoutes {
                   final extra = state.extra as Map<String, dynamic>;
                   final categoryId = extra['categoryId'] as String;
                   final categoryName = extra['categoryName'] as String;
+                  final from = extra['from'] as String? ?? 'categories';
 
                   return CategorizedPasswordsPage(
                     categoryId: categoryId,
                     categoryName: categoryName,
+                    from: from,
                   );
                 },
 
