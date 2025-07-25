@@ -8,7 +8,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     
     <application
-        android:label="zeropass"
+        android:label="Zero Pass"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
