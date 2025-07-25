@@ -94,13 +94,31 @@ class CategorizedPasswordsPage extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 10),
-                CustomTextField(
-                  hintText: 'Search Passwords',
-                  keyboardType: TextInputType.text,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: theme.colorScheme.onSurface.withOpacity(.5),
-                  ),
+                Consumer<CategorizedPasswordsProvider>(
+                  builder: (context, provider, child) {
+                    return CustomTextField(
+                      hintText: 'Search Passwords',
+                      keyboardType: TextInputType.text,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: theme.colorScheme.onSurface.withOpacity(.5),
+                      ),
+                      controller: provider.searchController,
+                      sideWidget: provider.searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                provider.clearSearch();
+                              },
+                              icon: Icon(
+                                Icons.clear,
+                                color: theme.colorScheme.onSurface.withOpacity(
+                                  .5,
+                                ),
+                              ),
+                            )
+                          : null,
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 10),
@@ -108,6 +126,53 @@ class CategorizedPasswordsPage extends StatelessWidget {
                 Expanded(
                   child: Consumer<CategorizedPasswordsProvider>(
                     builder: (context, provider, child) {
+                      if (provider.categorizedPasswords.isEmpty &&
+                          !provider.isLoading) {
+                        final hasSearchQuery =
+                            provider.searchController.text.isNotEmpty;
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                hasSearchQuery
+                                    ? Icons.search_off
+                                    : Icons.lock_outline,
+                                size: 64,
+                                color: theme.colorScheme.onSurface.withOpacity(
+                                  .3,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                hasSearchQuery
+                                    ? 'No passwords match your search'
+                                    : 'No passwords found in this category',
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(.5),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              if (hasSearchQuery) ...[
+                                const SizedBox(height: 8),
+                                TextButton(
+                                  onPressed: () {
+                                    provider.clearSearch();
+                                  },
+                                  child: Text(
+                                    'Clear search',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      }
+
                       return ListView.builder(
                         key: Key(categoryId),
                         itemCount: provider.categorizedPasswords.length,

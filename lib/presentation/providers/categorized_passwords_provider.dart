@@ -5,6 +5,8 @@ import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/utils/encryptor_helper.dart';
 
 class CategorizedPasswordsProvider extends ChangeNotifier {
+  final TextEditingController searchController = TextEditingController();
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -13,8 +15,50 @@ class CategorizedPasswordsProvider extends ChangeNotifier {
   final supabase = Supabase.instance.client;
   final _secureStorage = SecureStorageService();
 
+  List<Map<String, dynamic>> _allPasswords = [];
   List<Map<String, dynamic>> _categorizedPasswords = [];
   List<Map<String, dynamic>> get categorizedPasswords => _categorizedPasswords;
+
+  CategorizedPasswordsProvider() {
+    searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    searchController.removeListener(_onSearchChanged);
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    _filterPasswords();
+  }
+
+  void _filterPasswords() {
+    final searchQuery = searchController.text.toLowerCase().trim();
+
+    if (searchQuery.isEmpty) {
+      _categorizedPasswords = List.from(_allPasswords);
+    } else {
+      _categorizedPasswords = _allPasswords.where((password) {
+        final name = password['name']?.toString().toLowerCase() ?? '';
+        final username = password['username']?.toString().toLowerCase() ?? '';
+        final url = password['url']?.toString().toLowerCase() ?? '';
+        final note = password['note']?.toString().toLowerCase() ?? '';
+
+        return name.contains(searchQuery) ||
+            username.contains(searchQuery) ||
+            url.contains(searchQuery) ||
+            note.contains(searchQuery);
+      }).toList();
+    }
+
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    searchController.clear();
+  }
 
   void _setLoading(bool value) {
     _isLoading = value;
@@ -22,12 +66,13 @@ class CategorizedPasswordsProvider extends ChangeNotifier {
   }
 
   void _setCategorizedPasswords(List<Map<String, dynamic>> passwords) {
-    _categorizedPasswords = passwords;
-    notifyListeners();
+    _allPasswords = passwords;
+    _filterPasswords();
   }
 
   Future<void> fetchPasswords(String categoryId) async {
-    _setCategorizedPasswords([]);
+    _allPasswords.clear();
+    _categorizedPasswords.clear();
     _setLoading(true);
     try {
       final user = supabase.auth.currentUser;
@@ -106,8 +151,8 @@ class CategorizedPasswordsProvider extends ChangeNotifier {
   Future<void> deletePassword(String id) async {
     _setLoading(true);
     try {
-      _categorizedPasswords.removeWhere((item) => item['id'] == id);
-      notifyListeners();
+      _allPasswords.removeWhere((item) => item['id'] == id);
+      _filterPasswords();
 
       await supabase.from('passwords').delete().eq('id', id);
     } catch (error) {
@@ -119,7 +164,9 @@ class CategorizedPasswordsProvider extends ChangeNotifier {
   }
 
   void clear() {
+    _allPasswords.clear();
     _categorizedPasswords.clear();
+    searchController.clear();
     errorMessage = null;
     notifyListeners();
   }
