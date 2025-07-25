@@ -221,10 +221,16 @@ class TotpProvider extends ChangeNotifier {
     };
   }
 
-  Future<void> deleteTotpEntry(String secret) async {
+  Future<void> deleteTotpEntryEntry(TotpEntry entry) async {
     try {
-      await TotpSecretStorageService().deleteEntryBySecret(secret);
-      _totpEntries.removeWhere((entry) => entry.secret == secret);
+      await TotpSecretStorageService().deleteEntryBySecret(entry.secret);
+      _totpEntries.removeWhere((e) => e.id == entry.id);
+      final user = Supabase.instance.client.auth.currentUser;
+      Supabase.instance.client
+          .from('totp_entries')
+          .delete()
+          .eq('id', entry.id)
+          .eq('user_id', user!.id);
       notifyListeners();
     } catch (error) {
       setErrorMessage("Failed to delete TOTP entry: $error");
@@ -328,6 +334,51 @@ class TotpProvider extends ChangeNotifier {
         );
       }
       return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> fetchFromSupabase() async {
+    setLoading(true);
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        setErrorMessage("User not authenticated.");
+        return;
+      }
+
+      final response =
+          await Supabase.instance.client
+                  .from('totp_entries')
+                  .select()
+                  .eq('user_id', user.id)
+              as List;
+
+      final aesString = await _secureStorage.getAesKey();
+      if (aesString == null) {
+        setErrorMessage("Encryption key not found.");
+        return;
+      }
+      final aesBase64 = EncryptionHelper.saltFromBase64(aesString);
+
+      final decryptedEntries = response.map((e) {
+        final decrypted = {
+          'id': e['id'],
+          'name': EncryptionHelper.aesDecrypt(e['name'], aesBase64),
+          'secret': EncryptionHelper.aesDecrypt(e['secret'], aesBase64),
+          'digits': e['digits'],
+          'issuer': EncryptionHelper.aesDecrypt(e['issuer'], aesBase64),
+        };
+        return TotpEntry.fromJson(decrypted);
+      }).toList();
+
+      await TotpSecretStorageService().saveEntries(decryptedEntries);
+
+      setTotpEntries(decryptedEntries);
+      _currentOtps = generateOtps();
+    } catch (error) {
+      setErrorMessage("Failed to fetch TOTP entries: $error");
     } finally {
       setLoading(false);
     }

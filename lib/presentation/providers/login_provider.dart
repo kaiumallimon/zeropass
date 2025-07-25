@@ -10,6 +10,7 @@ import 'package:zeropass/data/models/profile_model.dart';
 import 'package:zeropass/data/services/auth_service.dart';
 import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
+import 'package:zeropass/presentation/providers/totp_provider.dart';
 import 'package:zeropass/utils/encryptor_helper.dart';
 
 class LoginProvider extends ChangeNotifier {
@@ -103,7 +104,7 @@ class LoginProvider extends ChangeNotifier {
         // Refresh ProfileProvider manually after saving profile
         context.read<ProfileProvider>().refreshProfile();
         context.read<CategoryProvider>().fetchCategories();
-
+        context.read<TotpProvider>().fetchFromSupabase();
         context.go('/home');
       }
     } on AuthException catch (e) {

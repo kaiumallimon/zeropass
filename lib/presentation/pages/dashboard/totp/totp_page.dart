@@ -103,7 +103,7 @@ class _TotpPageState extends State<TotpPage> {
                             key: Key(entry.secret),
                             direction: DismissDirection.endToStart,
                             onDismissed: (direction) async {
-                              await provider.deleteTotpEntry(entry.secret);
+                              await provider.deleteTotpEntryEntry(entry);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   margin: EdgeInsets.all(10),
