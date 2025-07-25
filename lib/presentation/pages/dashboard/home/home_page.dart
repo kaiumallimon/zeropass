@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:zeropass/data/local_db/local_db_service.dart';
+import 'package:zeropass/presentation/providers/categorized_passwords_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/home_provider.dart';
 
@@ -32,138 +35,143 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Consumer<HomeProvider>(
-          builder: (context, provider, _) {
-            return CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: theme.colorScheme.surface,
-                  foregroundColor: theme.colorScheme.onSurface,
-                  elevation: 0,
-                  toolbarHeight: 100,
-                  title: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 10,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text.rich(
-                            TextSpan(
-                              text: 'Welcome,\n',
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                color: theme.colorScheme.onSurface,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: profile?.name ?? 'User',
-                                  style: theme.textTheme.headlineSmall
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: theme.colorScheme.primary,
-                                      ),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await context.read<HomeProvider>().init(context);
+          },
+          child: Consumer<HomeProvider>(
+            builder: (context, provider, _) {
+              return CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: theme.colorScheme.surface,
+                    foregroundColor: theme.colorScheme.onSurface,
+                    elevation: 0,
+                    toolbarHeight: 100,
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text.rich(
+                              TextSpan(
+                                text: 'Welcome,\n',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: theme.colorScheme.onSurface,
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => context.go('/home/profile'),
-                          child: CircleAvatar(
-                            backgroundColor: theme.colorScheme.primary
-                                .withOpacity(0.3),
-                            radius: 25,
-                            child: Text(
-                              (profile?.name.isNotEmpty ?? false)
-                                  ? profile!.name[0].toUpperCase()
-                                  : '?',
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
+                                children: [
+                                  TextSpan(
+                                    text: profile?.name ?? 'User',
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () => context.go('/home/profile'),
+                            child: CircleAvatar(
+                              backgroundColor: theme.colorScheme.primary
+                                  .withOpacity(0.3),
+                              radius: 25,
+                              child: Text(
+                                (profile?.name.isNotEmpty ?? false)
+                                    ? profile!.name[0].toUpperCase()
+                                    : '?',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (provider.isLoading) ...[
-                          const LinearProgressIndicator(),
-                          const SizedBox(height: 20),
-                        ],
-                        Row(
-                          children: [
-                            _buildStatCard(
-                              title: 'Passwords',
-                              count: provider.passwordsCount,
-                              color: theme.colorScheme.primary,
-                            ),
-                            const SizedBox(width: 15),
-                            _buildStatCard(
-                              title: 'TOTP Entries',
-                              count: provider.authenticatorsCount,
-                              color: theme.colorScheme.primary,
-                            ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (provider.isLoading) ...[
+                            const LinearProgressIndicator(),
+                            const SizedBox(height: 20),
                           ],
-                        ),
-                        if (provider.errorMessage != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Text(
-                              'Error: ${provider.errorMessage}',
-                              style: TextStyle(color: theme.colorScheme.error),
-                            ),
+                          Row(
+                            children: [
+                              _buildStatCard(
+                                title: 'Passwords',
+                                count: provider.passwordsCount,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(width: 15),
+                              _buildStatCard(
+                                title: 'TOTP Entries',
+                                count: provider.authenticatorsCount,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ],
                           ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Latest Passwords',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
+                          if (provider.errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Text(
+                                'Error: ${provider.errorMessage}',
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                ),
                               ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                context.read<DashboardWrapperProvider>().setTab(
-                                  context,
-                                  1,
-                                );
-                              },
-                              child: Text(
-                                'View All',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.primary.withOpacity(
-                                    .7,
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Latest Passwords',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context
+                                      .read<DashboardWrapperProvider>()
+                                      .setTab(context, 1);
+                                },
+                                child: Text(
+                                  'View All',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.primary
+                                        .withOpacity(.7),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        _buildLatestPasswordsList(),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          _buildLatestPasswordsList(),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -174,7 +182,10 @@ class _HomePageState extends State<HomePage> {
     return Consumer<HomeProvider>(
       builder: (context, provider, _) {
         if (provider.isLoadingPasswords) {
-          return const Center(child: CircularProgressIndicator());
+          return SizedBox(
+            height: 200,
+            child: const Center(child: CupertinoActivityIndicator()),
+          );
         }
 
         if (provider.passwords.isEmpty) {
@@ -186,7 +197,7 @@ class _HomePageState extends State<HomePage> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: provider.passwords.length,
           itemBuilder: (context, index) {
-            final password = provider.passwords[index];
+            // final password = provider.passwords[index];
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Dismissible(
@@ -223,9 +234,9 @@ class _HomePageState extends State<HomePage> {
 
                 onDismissed: (direction) {
                   // Delete the password
-                  // provider.deletePassword(
-                  //   provider.categorizedPasswords[index]['id'],
-                  // );
+                  context.read<CategorizedPasswordsProvider>().deletePassword(
+                    provider.passwords[index].id,
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -326,10 +337,27 @@ class _HomePageState extends State<HomePage> {
 
                         IconButton(
                           onPressed: () async {
-                            // await provider.copyPassword(
-                            //   context,
-                            //   index,
-                            // );
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: provider.passwords[index].password,
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Password copied to clipboard',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onPrimaryContainer,
+                                  ),
+                                ),
+                                backgroundColor: theme.colorScheme.primary,
+                                behavior: SnackBarBehavior.floating,
+                                margin: const EdgeInsets.all(10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            );
                           },
                           icon: HugeIcon(
                             icon: HugeIcons.strokeRoundedCopy01,
