@@ -58,6 +58,23 @@ class AppRoutes {
               child: const HomePage(),
               transitionsBuilder: _fadeTransition,
             ),
+            routes: [
+              GoRoute(
+                path: '/profile',
+                pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ProfilePage(),
+                  transitionsBuilder: _fadeTransition,
+                ),
+                // Add the ThemePage route
+                routes: [
+                  GoRoute(
+                    path: '/theme',
+                    builder: (context, state) => const ThemePage(),
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: '/categories',
@@ -115,21 +132,7 @@ class AppRoutes {
               transitionsBuilder: _fadeTransition,
             ),
           ),
-          GoRoute(
-            path: '/profile',
-            pageBuilder: (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: const ProfilePage(),
-              transitionsBuilder: _fadeTransition,
-            ),
-            // Add the ThemePage route
-            routes: [
-              GoRoute(
-                path: '/theme',
-                builder: (context, state) => const ThemePage(),
-              ),
-            ],
-          ),
+
           GoRoute(
             path: '/totp',
             pageBuilder: (context, state) => CustomTransitionPage(

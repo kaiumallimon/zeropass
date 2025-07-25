@@ -11,6 +11,7 @@ import 'package:zeropass/presentation/providers/category_provider.dart';
 import 'package:zeropass/presentation/providers/dashboard_wrapper_provider.dart';
 import 'package:zeropass/presentation/providers/detailed_password_provider.dart';
 import 'package:zeropass/presentation/providers/forgotpassword_provider.dart';
+import 'package:zeropass/presentation/providers/home_provider.dart';
 import 'package:zeropass/presentation/providers/login_provider.dart';
 import 'package:zeropass/presentation/providers/profile_provider.dart';
 import 'package:zeropass/presentation/providers/registration_provider.dart';
@@ -66,6 +67,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DetailedPasswordProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => TotpProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
+
       ],
       child: const MyApp(),
     ),

@@ -127,7 +127,7 @@ class ProfilePage extends StatelessWidget {
         icon: HugeIcons.strokeRoundedMoon02,
         label: 'Dark Mode',
         onTap: () {
-          context.go('/profile/theme');
+          context.go('/home/profile/theme');
         },
       ),
       _ProfileMenuItem(

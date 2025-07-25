@@ -44,6 +44,16 @@ class _PasswordDetailsPageState extends State<PasswordDetailsPage> {
         elevation: 0,
         toolbarHeight: 80,
         title: Text('${widget.passwordData['name']} Password'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (widget.passwordData['from'] == 'home') {
+              context.go('/home');
+            } else {
+              context.pop();
+            }
+          },
+        ),
         actions: [
           Consumer<DetailedPasswordProvider>(
             builder: (context, provider, child) {
