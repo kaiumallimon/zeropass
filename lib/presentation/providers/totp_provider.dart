@@ -221,15 +221,21 @@ class TotpProvider extends ChangeNotifier {
     };
   }
 
-  Future<void> deleteTotpEntryEntry(TotpEntry entry) async {
+  Future<void> deleteTotpEntry(TotpEntry entry) async {
     try {
       await TotpSecretStorageService().deleteEntryBySecret(entry.secret);
-      _totpEntries.removeWhere((e) => e.id == entry.id);
+      _totpEntries.removeWhere((e) => e.secret == entry.secret);
       final user = Supabase.instance.client.auth.currentUser;
-      Supabase.instance.client
+      final aesString = await _secureStorage.getAesKey();
+      final aesBase64 = EncryptionHelper.saltFromBase64(aesString!);
+      final encryptedSecret = EncryptionHelper.aesEncrypt(
+        entry.secret,
+        aesBase64,
+      );
+      await Supabase.instance.client
           .from('totp_entries')
           .delete()
-          .eq('id', entry.id)
+          .eq('secret', encryptedSecret)
           .eq('user_id', user!.id);
       notifyListeners();
     } catch (error) {
