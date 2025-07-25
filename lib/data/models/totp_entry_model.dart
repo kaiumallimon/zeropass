@@ -24,7 +24,17 @@ class TotpEntry {
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'secret': secret, 'digits': digits, 'issuer': issuer};
+    return {
+      'id': id,
+      'name': name,
+      'secret': secret,
+      'digits': digits,
+      'issuer': issuer,
+    };
+  }
+
+  set id(String newId) {
+    id = newId;
   }
 
   set name(String newName) {

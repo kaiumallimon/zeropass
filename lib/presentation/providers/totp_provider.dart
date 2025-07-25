@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:otp/otp.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 import 'package:zeropass/data/local_db/secure_st_service.dart';
 import 'package:zeropass/data/local_db/totp_secrets_service.dart';
 import 'package:zeropass/data/models/totp_entry_model.dart';
@@ -101,6 +102,11 @@ class TotpProvider extends ChangeNotifier {
     super.dispose();
   }
 
+  /// Loads TOTP entries from local storage and starts the timer
+  /// This method fetches entries from the local storage service,
+  /// updates the state, and starts the unified timer.
+  /// /// If an error occurs, it sets an error message.
+  /// It also generates the current OTPs for all entries.
   Future<void> loadTotpEntries(BuildContext context) async {
     setLoading(true);
     try {
@@ -115,6 +121,12 @@ class TotpProvider extends ChangeNotifier {
     }
   }
 
+  /// Scans a QR code and extracts TOTP data
+  /// This method expects the QR code to contain a URL in the format:
+  /// otpauth://totp/Issuer:AccountName?secret=SECRET&digits
+  /// digits=6&issuer=Issuer
+  /// /// Returns a map with keys: Name, Secret, Digits, Issuer
+  /// If the data is invalid, it shows an error alert.
   Future<void> scanQrCode(BuildContext context, String data) async {
     setLoading(true);
     try {
@@ -170,8 +182,11 @@ class TotpProvider extends ChangeNotifier {
         }
         return;
       }
-
+      // Prepare data for Supabase and local storage
+      final id = Uuid().v4();
+      print('Scanned ID: $id');
       final totpEntrySupabase = {
+        'id': id,
         'name': encryptedName,
         'secret': encryptedSecret,
         'digits': digits,
@@ -180,6 +195,7 @@ class TotpProvider extends ChangeNotifier {
       };
 
       final totpEntryLocal = {
+        'id': id,
         'name': name,
         'secret': secret,
         'digits': digits,
@@ -209,6 +225,13 @@ class TotpProvider extends ChangeNotifier {
     }
   }
 
+  /// Extracts TOTP data from a URL
+  /// This method assumes the URL is in the format:
+  /// otpauth://totp/Issuer:AccountName?secret=SECRET&digits
+  /// digits=6&issuer=Issuer
+  /// /// Returns a map with keys: Name, Secret, Digits, Issuer
+  ///
+
   Map<String, dynamic> extractDataFromUrl(String url) {
     final uri = Uri.parse(url);
     final queryParams = uri.queryParameters;
@@ -221,22 +244,19 @@ class TotpProvider extends ChangeNotifier {
     };
   }
 
+  /// Deletes a TOTP entry
+  ///
   Future<void> deleteTotpEntry(TotpEntry entry) async {
     try {
       await TotpSecretStorageService().deleteEntryBySecret(entry.secret);
       _totpEntries.removeWhere((e) => e.secret == entry.secret);
-      final user = Supabase.instance.client.auth.currentUser;
-      final aesString = await _secureStorage.getAesKey();
-      final aesBase64 = EncryptionHelper.saltFromBase64(aesString!);
-      final encryptedSecret = EncryptionHelper.aesEncrypt(
-        entry.secret,
-        aesBase64,
-      );
+
       await Supabase.instance.client
           .from('totp_entries')
           .delete()
-          .eq('secret', encryptedSecret)
-          .eq('user_id', user!.id);
+          .eq('id', entry.id)
+          .select();
+
       notifyListeners();
     } catch (error) {
       setErrorMessage("Failed to delete TOTP entry: $error");
@@ -300,7 +320,13 @@ class TotpProvider extends ChangeNotifier {
         return false;
       }
 
+      // Prepare data for Supabase and local storage
+      final id = Uuid().v4();
+
+      print('Manual ID: $id');
+
       final totpEntrySupabase = {
+        'id': id,
         'name': encryptedName,
         'secret': encryptedSecret,
         'digits': digits,
@@ -309,6 +335,7 @@ class TotpProvider extends ChangeNotifier {
       };
 
       final totpEntryLocal = {
+        'id': id,
         'name': name,
         'secret': secret,
         'digits': digits,

@@ -47,7 +47,7 @@ class TotpAddManualPage extends StatelessWidget {
 
               CustomTextField(
                 label: 'Issuer',
-                hintText: 'Enter issuer (optional)',
+                hintText: 'Enter issuer',
                 keyboardType: TextInputType.text,
                 controller: totpProvider.issuerController,
               ),
