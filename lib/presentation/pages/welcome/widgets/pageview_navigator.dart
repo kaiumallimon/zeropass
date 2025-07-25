@@ -36,13 +36,24 @@ class WelcomePageNavigator extends StatelessWidget {
           ),
 
           TextSpan(
-            text: "3",
+            text: "3  ",
             style: TextStyle(
               color: index == 2
                   ? theme.colorScheme.primary
                   : theme.colorScheme.onSurface.withOpacity(.5),
               fontWeight: index == 2 ? FontWeight.bold : FontWeight.normal,
               fontSize: index == 2 ? 30 : 20,
+            ),
+          ),
+
+          TextSpan(
+            text: "4",
+            style: TextStyle(
+              color: index == 3
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(.5),
+              fontWeight: index == 3 ? FontWeight.bold : FontWeight.normal,
+              fontSize: index == 3 ? 30 : 20,
             ),
           ),
         ],

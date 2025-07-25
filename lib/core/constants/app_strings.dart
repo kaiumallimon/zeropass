@@ -22,6 +22,12 @@ class AppStrings {
   static final String welcome3Subtitle =
       'Easily manage and categorize your logins. ZeroPass gives you control over your digital security, all in one app.';
 
+  static final String welcome4Title1 = 'Two-Factor\n';
+  static final String welcome4Title2 = 'Authentication\n';
+  static final String welcome4Title3 = 'Made Easy';
+  static final String welcome4Subtitle =
+      'Generate TOTP codes instantly for your accounts. Add an extra layer of security with time-based one-time passwords, all within ZeroPass.';
+
   static final String registerTitle = 'Register';
   static final String registerSubtitle =
       'Create an account to start managing your passwords securely.';

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:zeropass/data/services/auth_service.dart';
-import 'package:zeropass/data/services/email_verifier.dart';
 
 class RegistrationProvider extends ChangeNotifier {
   /// TextEditingControllers for registration fields

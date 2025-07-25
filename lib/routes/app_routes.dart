@@ -19,7 +19,6 @@ import 'package:zeropass/presentation/pages/dashboard/profile/privacy_policy_pag
 import 'package:zeropass/presentation/pages/dashboard/profile/change_password_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/profile/edit_profile_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_manual_page.dart';
-import 'package:zeropass/presentation/pages/dashboard/totp/totp_add_qr_code_page.dart';
 import 'package:zeropass/presentation/pages/dashboard/totp/totp_page.dart';
 import 'package:zeropass/presentation/pages/splash/splash_page.dart';
 import 'package:zeropass/presentation/pages/welcome/welcome_page.dart';

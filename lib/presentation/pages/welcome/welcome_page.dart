@@ -21,7 +21,7 @@ class WelcomePage extends StatelessWidget {
 
       body: SafeArea(
         child: PageView.builder(
-          itemCount: 3,
+          itemCount: 4,
 
           itemBuilder: (context, index) {
             return Container(
@@ -44,14 +44,14 @@ class WelcomePage extends StatelessWidget {
                       Text.rich(
                         TextSpan(
                           text: _getTitle(index).first,
-                          style: theme.textTheme.displayLarge?.copyWith(
+                          style: theme.textTheme.displaySmall?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,
                           ),
                           children: [
                             TextSpan(
                               text: _getTitle(index)[1],
-                              style: theme.textTheme.displayLarge?.copyWith(
+                              style: theme.textTheme.displaySmall?.copyWith(
                                 color: theme.colorScheme.secondary,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -59,7 +59,7 @@ class WelcomePage extends StatelessWidget {
 
                             TextSpan(
                               text: _getTitle(index).last,
-                              style: theme.textTheme.displayLarge?.copyWith(
+                              style: theme.textTheme.displaySmall?.copyWith(
                                 color: theme.colorScheme.onSurface,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -185,6 +185,12 @@ class WelcomePage extends StatelessWidget {
           AppStrings.welcome3Title2,
           AppStrings.welcome3Title3,
         ];
+      case 3:
+        return [
+          AppStrings.welcome4Title1,
+          AppStrings.welcome4Title2,
+          AppStrings.welcome4Title3,
+        ];
       default:
         return [];
     }
@@ -199,6 +205,8 @@ class WelcomePage extends StatelessWidget {
         return AppStrings.welcome2Subtitle;
       case 2:
         return AppStrings.welcome3Subtitle;
+      case 3:
+        return AppStrings.welcome4Subtitle;
       default:
         return '';
     }
